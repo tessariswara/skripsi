@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import DeviceModalConfirm from './deviceModalConfirm';
+import AddDevice from '../deviceApi/addDevice';
 import '../../../styles/device.css';
 
 interface ModalProps {
+  apiUrl: string;
+  apiPost: string;
   show: boolean;
   handleClose: () => void;
 }
 
-const DeviceModal: React.FC<ModalProps> = ({ show, handleClose }) => {
+const DeviceModal: React.FC<ModalProps> = ({ apiUrl, apiPost, show, handleClose }) => {
   const [serialNumber, setSerialNumber] = useState('');
   const [deviceName, setDeviceName] = useState('');
   const [machineName, setMachineName] = useState('');
@@ -34,6 +38,7 @@ const DeviceModal: React.FC<ModalProps> = ({ show, handleClose }) => {
     if (confirmed) {
       console.log('Data saved successfully!');
       console.log(serialNumber, deviceName, machineName, plant, description);
+      AddDevice(apiPost, serialNumber, deviceName, machineName, plant, description); 
     } else {
       console.log('Save operation canceled.');
     }
@@ -126,26 +131,10 @@ const DeviceModal: React.FC<ModalProps> = ({ show, handleClose }) => {
         </div>
       </div>
 
-      {showConfirmationModal && (
-        <div className={`modal ${showConfirmationModal ? 'visible' : 'hidden'}`}>
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1>Please Confirm</h1>
-            </div>
-            <div className="modal-column confirm">
-              <p>Are you sure your input data is correct?</p>
-            </div>
-            <div className="modal-cta confirm">
-              <button className="button cancel" onClick={() => handleConfirmation(false)}>
-                Cancel
-              </button>
-              <button className="button" onClick={() => handleConfirmation(true)}>
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeviceModalConfirm
+        show={showConfirmationModal}
+        handleConfirmation={handleConfirmation}
+      />
     </div>
   );
 };

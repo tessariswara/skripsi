@@ -3,7 +3,10 @@ import DataGridDemo from './deviceTable';
 import "../../styles/device.css"
 import "../../index.css"
 import DeviceModal from './deviceModal/deviceModal';
-import ApiCaller from './deviceApi';
+
+
+const apiUrl = "http://178.128.107.238:5000/api/device/plantA/allDevice";
+const apiPost = "http://178.128.107.238:5000/api/device/plantA";
 
 const Device: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -27,12 +30,10 @@ const Device: React.FC = () => {
             <input type="text" placeholder='Search for anything' />
           </div>
           <div className='page-table'>
-            <DataGridDemo />
-            <DeviceModal show={showModal} handleClose={handleCloseModal} />
+            <DataGridDemo apiUrl={apiUrl} />
+            <DeviceModal show={showModal} handleClose={handleCloseModal} apiPost={apiPost} apiUrl={apiUrl}/>
           </div>
-          <div>
-                <ApiCaller />  
-          </div>
+
         </div>
       </div>
     </div>
