@@ -1,6 +1,6 @@
-export const fetchDataFromApi = async (apiUrl) => {
+export const fetchDataFromTenant = async (tenantUrl) => {
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(tenantUrl, {
         headers: {
           Accept: "application/json",
         },

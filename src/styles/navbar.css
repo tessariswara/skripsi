@@ -19,6 +19,27 @@
     gap: 51px;
 }
 
+.navbar-user {
+    display: flex;
+    gap: 23px;
+    align-items: center;
+}
+
 .navbar-nav {
     text-decoration: none;
+}
+
+.navbar-user-photo {
+    background-color: #FF674F;
+    width: 56px;
+    height: 56px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 200px;
+}
+
+.navbar-user-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }

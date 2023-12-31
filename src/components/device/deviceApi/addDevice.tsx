@@ -26,9 +26,11 @@ const AddDevice = (
       .then((response) => response.json())
       .then((data) => {
         console.log("Response dari server setelah POST:", data.message);
+        console.log(deviceData)
       })
       .catch((error) => {
         console.error("Error:", error);
+        console.log(deviceData)
       });
   };
   

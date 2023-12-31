@@ -54,6 +54,7 @@
 }
 
 .confirm {
+    position: 50%;
     align-items: center;
     font-size: 18px;
     justify-content: center;

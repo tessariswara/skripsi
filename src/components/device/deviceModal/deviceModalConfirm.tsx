@@ -3,9 +3,10 @@ import React from 'react';
 interface ModalConfirmProps {
   show: boolean;
   handleConfirmation: (confirmed: boolean) => void;
+  isDelete: boolean;
 }
 
-const DeviceModalConfirm: React.FC<ModalConfirmProps> = ({ show, handleConfirmation }) => {
+const DeviceModalConfirm: React.FC<ModalConfirmProps> = ({ show, handleConfirmation, isDelete }) => {
   return (
     <div className={`modal ${show ? 'visible' : 'hidden'}`}>
       <div className="modal-content">
@@ -19,9 +20,15 @@ const DeviceModalConfirm: React.FC<ModalConfirmProps> = ({ show, handleConfirmat
           <button className="button cancel" onClick={() => handleConfirmation(false)}>
             Cancel
           </button>
-          <button className="button" onClick={() => handleConfirmation(true)}>
-            Save
+          {isDelete ? (
+              <button className="button" onClick={() => handleConfirmation(true)}>
+              Submit
+              </button>
+          ):(
+            <button className="button" onClick={() => handleConfirmation(true)}>
+            Delete
           </button>
+          )}
         </div>
       </div>
     </div>

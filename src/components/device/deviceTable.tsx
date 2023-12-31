@@ -22,11 +22,14 @@ const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl }) => {
           desc: item.deskripsi,
         }));
 
+        console.log(apiData)
+
         setDeviceData(filteredData);
         setError(null);
       } catch (error) {
         console.error("Error setting device data:", error.message);
-        setError("Error fetching data from API. Please try again.");
+        setError("Gagal menerima informasi, periksa kembali server Anda.");
+        setDeviceData([]);
       }
     };
 
@@ -66,12 +69,19 @@ const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl }) => {
   ];
 
   return (
-    <div style={{ display:'flex' }}>
-      <DataGrid rows={deviceData} columns={columns} 
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
-        }}
-        pageSizeOptions={[10, 15, 25]} />
+    <div style={{ display: 'flex' }}>
+      {error ? (
+        <p>{error}</p>
+      ) : (
+        <DataGrid
+          rows={deviceData}
+          columns={columns}
+          initialState={{
+            pagination: { paginationModel: { pageSize: 10 } },
+          }}
+          pageSizeOptions={[10, 15, 25]}
+        />
+      )}
     </div>
   );
 };

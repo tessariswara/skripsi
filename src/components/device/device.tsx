@@ -3,15 +3,27 @@ import DataGridDemo from './deviceTable';
 import "../../styles/device.css"
 import "../../index.css"
 import DeviceModal from './deviceModal/deviceModal';
-
-
-const apiUrl = "http://178.128.107.238:5000/api/device/plantA/allDevice";
-const apiPost = "http://178.128.107.238:5000/api/device/plantA";
+import DeviceAddModal from './deviceModal/deviceAddModal'; 
+import DeviceEditModal from './deviceModal/deviceEditModal';
+import { apiPost } from '../../App';
+import { apiUrl } from '../../App';
+import { apiDelete } from '../../App';
 
 const Device: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
-  const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [deviceData, setDeviceData] = useState({
+    serialNumber: '',
+    deviceName: '',
+    machineName: '',
+    plant: '',
+    description: '',
+  });
+
+  const handleShowAddModal = () => setShowAddModal(true);
+  const handleCloseAddModal = () => setShowAddModal(false);
+  const handleShowEditModal = () => setShowEditModal(true);
+  const handleCloseEditModal = () => setShowEditModal(false);
 
   return (
     <div className='page-container'>
@@ -22,8 +34,12 @@ const Device: React.FC = () => {
               <h1>Device Management</h1>
             </div>
             <div className='page-control'>
-              <button className='button' onClick={handleShowModal}>Add Device</button>
-              <button className='button'>Edit Device</button>
+              <button className='button' onClick={handleShowAddModal}>
+                Add Device
+              </button>
+              <button className='button' onClick={handleShowEditModal}>
+                Edit Device
+              </button>
             </div>
           </div>
           <div className='page-search'>
@@ -31,9 +47,24 @@ const Device: React.FC = () => {
           </div>
           <div className='page-table'>
             <DataGridDemo apiUrl={apiUrl} />
-            <DeviceModal show={showModal} handleClose={handleCloseModal} apiPost={apiPost} apiUrl={apiUrl}/>
+            <DeviceAddModal
+              show={showAddModal}
+              handleClose={handleCloseAddModal}
+              apiPost={apiPost}
+              apiUrl={apiUrl}
+              deviceData={deviceData}
+              setDeviceData={setDeviceData}
+            />
+            <DeviceEditModal
+              show={showEditModal}
+              handleClose={handleCloseEditModal}
+              apiPost={apiPost}
+              apiUrl={apiUrl}
+              deviceData={deviceData}
+              setDeviceData={setDeviceData}
+              apiDelete={apiDelete}
+            />
           </div>
-
         </div>
       </div>
     </div>
