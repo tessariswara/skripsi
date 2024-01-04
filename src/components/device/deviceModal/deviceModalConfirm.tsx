@@ -1,4 +1,5 @@
 import React from 'react';
+import DeviceEditModal from './deviceEditModal';
 
 interface ModalConfirmProps {
   show: boolean;
@@ -7,6 +8,7 @@ interface ModalConfirmProps {
 }
 
 const DeviceModalConfirm: React.FC<ModalConfirmProps> = ({ show, handleConfirmation, isDelete }) => {
+
   return (
     <div className={`modal ${show ? 'visible' : 'hidden'}`}>
       <div className="modal-content">
@@ -14,7 +16,11 @@ const DeviceModalConfirm: React.FC<ModalConfirmProps> = ({ show, handleConfirmat
           <h1>Please Confirm</h1>
         </div>
         <div className="modal-column confirm">
-          <p>Are you sure your input data is correct?</p>
+        {isDelete ? (
+            <p>Are you sure your input data is correct?</p>
+          ):(
+            <p>Are you sure delete your data?</p>
+          )}
         </div>
         <div className="modal-cta confirm">
           <button className="button cancel" onClick={() => handleConfirmation(false)}>
@@ -22,12 +28,12 @@ const DeviceModalConfirm: React.FC<ModalConfirmProps> = ({ show, handleConfirmat
           </button>
           {isDelete ? (
               <button className="button" onClick={() => handleConfirmation(true)}>
-              Submit
+                Save
               </button>
           ):(
             <button className="button" onClick={() => handleConfirmation(true)}>
-            Delete
-          </button>
+              Delete
+            </button>
           )}
         </div>
       </div>

@@ -7,6 +7,7 @@ import { fetchDataFromTenant } from '../../tenant/tenantApi/tenantHitApi';
 import { tenantUrl } from '../../../App';
 import { deleteDeviceApi } from '../deviceApi/deleteDevice';
 import "../../../styles/device.css"
+import DeviceEditModal from './deviceEditModal';
 
 interface ModalProps {
   title: string;
@@ -45,12 +46,11 @@ const DeviceModal: React.FC<ModalProps> = ({
   handleClose,
   handleConfirmation: propHandleConfirmation,
   deviceData,
-  showDeleteButton,
   setDeviceData,
   isEdit,
-  isDelete,
 }) => {
-  const [uhuy, setUhuy] = useState(true);
+  const [isDelete, setIsDelete] = useState(true);
+  const [showDeleteButton, setShowDeleteButton] = useState(true);
   const [serialNumber, setSerialNumber] = useState('');
   const [options, setOptions] = useState([]);
   const [serialNumberSelected, setSerialNumberSelected] = useState(false);
@@ -117,26 +117,30 @@ const DeviceModal: React.FC<ModalProps> = ({
     }
   };
 
-  const handleDelete = async () => {
-    console.log('Serial Number:', serialNumber); 
-    setUhuy(false);
-    try {
-      await deleteDeviceApi(apiDelete, plant, [serialNumber]);
-      console.log('Data deleted successfully!');
-      forceUpdate();
-      handleClose();
-    } catch (error) {
-      console.error('Error deleting device:', error.message);
-    }
+  const handleDelete = () => {
+    setDeviceData({
+      serialNumber,
+      deviceName,
+      machineName,
+      plant,
+      description,
+    });
+    setIsDelete(false)
+    setShowConfirmationModal(true);
+    // try {
+    //   await deleteDeviceApi(apiDelete, plant, [serialNumber]);
+    //   console.log('Data deleted successfully!');
+    //   forceUpdate();
+    //   handleClose();
+    // } catch (error) {
+    //   console.error('Error deleting device:', error.message);
+    // }
   };
-  console.log("Ini plant", plant)
-
   const handleConfirmation = (confirmed: boolean) => {
     setShowConfirmationModal(false);
 
     if (confirmed) {
       console.log('Data saved successfully!');
-      console.log(serialNumber, deviceName, machineName, plant);
       propHandleConfirmation(true);
     } else {
       console.log('Save operation canceled.');
@@ -145,6 +149,7 @@ const DeviceModal: React.FC<ModalProps> = ({
 
     handleClose();
   };
+  
 
   const resetForm = () => {
     setSerialNumber('');
@@ -175,7 +180,7 @@ const DeviceModal: React.FC<ModalProps> = ({
         setOptions(formattedOptions);
       } catch (error) {
         console.error("Error setting device data:", error.message);
-        setError("Error fetching data from API. Please try again.");
+        setError("Error fetching data from server. Please try again.");
       }
     };
 
@@ -295,7 +300,7 @@ const DeviceModal: React.FC<ModalProps> = ({
       <DeviceModalConfirm
         show={showConfirmationModal}
         handleConfirmation={handleConfirmation}
-        isDelete={uhuy}
+        isDelete={isDelete}
       />
     </div>
   );

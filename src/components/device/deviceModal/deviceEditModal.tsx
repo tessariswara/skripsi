@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DeviceModal from './deviceModal';
 import UpdateDevice from '../deviceApi/updateDevice';
+import { deleteDeviceApi } from '../deviceApi/deleteDevice';
 
 interface EditModalProps {
   apiUrl: string;
@@ -9,6 +10,7 @@ interface EditModalProps {
   show: boolean;
   handleClose: () => void;
   serialNumberSelected,
+  isDelete: boolean;
   deviceData: {
     serialNumber: string;
     deviceName: string;
@@ -37,16 +39,33 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
   showDeleteButton, 
   serialNumberSelected,
 }) => {
+  const [isDelete, setIsDelete] = useState(true);
   const handleConfirmation = (confirmed: boolean) => {
-    if (confirmed) {
+    if (confirmed && isDelete === false) {
+      console.log("masuk nih bos")
+      console.log(deviceData.serialNumber)
+      deleteDeviceApi(apiDelete, deviceData.plant, [deviceData.serialNumber])
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error('Error updating device:', error);
+      });
+    } else if (confirmed) {
       console.log('Data updated successfully!');
-      console.log(deviceData.plant)
-      UpdateDevice(apiPost + '/' + deviceData.serialNumber, deviceData.serialNumber, deviceData.deviceName, deviceData.machineName, deviceData.plant, deviceData.description);
+      console.log(deviceData.plant);
+      UpdateDevice(apiPost + '/' + deviceData.serialNumber, deviceData.serialNumber, deviceData.deviceName, deviceData.machineName, deviceData.plant, deviceData.description)
+      // console.log("bro", isDelete)
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error('Error updating device:', error);
+      });
     } else {
       console.log('Update operation canceled.');
+      handleClose();
     }
-
-    handleClose();
   };
   
 
@@ -64,6 +83,7 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
       setDeviceData={setDeviceData}
       showDeleteButton={true} 
       isEdit={true}
+      isDelete={isDelete}
     />
 
 

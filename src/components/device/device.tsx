@@ -25,7 +25,7 @@ const Device: React.FC = () => {
   const handleCloseAddModal = () => setShowAddModal(false);
   const handleShowEditModal = () => setShowEditModal(true);
   const handleCloseEditModal = () => setShowEditModal(false);
-
+  
   return (
     <div className='page-container'>
       <div className='border-container'>
@@ -52,7 +52,7 @@ const Device: React.FC = () => {
             />
           </div>
           <div className='page-table'>
-            <DataGridDemo apiUrl={apiUrl} searchText={searchText}/>
+            <DataGridDemo apiUrl={apiUrl} searchText={searchText} />
             <DeviceAddModal
               show={showAddModal}
               handleClose={handleCloseAddModal}
