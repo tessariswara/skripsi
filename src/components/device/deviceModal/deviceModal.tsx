@@ -183,7 +183,28 @@ const DeviceModal: React.FC<ModalProps> = ({
         setError("Error fetching data from server. Please try again.");
       }
     };
-
+    // const fetchPlants = async () => {
+    //   try {
+    //     const plants = await fetchDataFromTenant(tenantUrl);
+    //     const plantOptions = plants.map((item) => ({
+    //       value: item.plant_name,
+    //       label: item.plant_name,
+    //     }));
+    //     setPlantOptions(plantOptions);
+    //   } catch (error) {
+    //     console.error("Error fetching plant options:", error.message);
+    //     setPlantOptions([]); 
+    //   }
+    // };
+    
+    // fetchPlants();
+    fetchDa();
+    if (show) {
+      resetForm();
+    }
+  }, [show]); 
+  
+  useEffect(() => {
     const fetchPlants = async () => {
       try {
         const plants = await fetchDataFromTenant(tenantUrl);
@@ -197,14 +218,8 @@ const DeviceModal: React.FC<ModalProps> = ({
         setPlantOptions([]); 
       }
     };
-
-    fetchPlants();
-    fetchDa();
-    if (show) {
-      resetForm();
-    }
-  }, [show, apiUrl, tenantUrl]); 
-  
+    return ()=> fetchPlants();
+  }, [])
 
   return (
     <div key={forceUpdateKey}>
