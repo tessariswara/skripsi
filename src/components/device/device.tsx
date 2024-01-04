@@ -12,6 +12,7 @@ import { apiDelete } from '../../App';
 const Device: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [deviceData, setDeviceData] = useState({
     serialNumber: '',
     deviceName: '',
@@ -43,10 +44,15 @@ const Device: React.FC = () => {
             </div>
           </div>
           <div className='page-search'>
-            <input type="text" placeholder='Search for anything' />
+            <input
+              type="text"
+              placeholder='Search for anything'
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
           </div>
           <div className='page-table'>
-            <DataGridDemo apiUrl={apiUrl} />
+            <DataGridDemo apiUrl={apiUrl} searchText={searchText}/>
             <DeviceAddModal
               show={showAddModal}
               handleClose={handleCloseAddModal}

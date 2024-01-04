@@ -41,7 +41,6 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
     if (confirmed) {
       console.log('Data updated successfully!');
       console.log(deviceData.plant)
-     
       UpdateDevice(apiPost + '/' + deviceData.serialNumber, deviceData.serialNumber, deviceData.deviceName, deviceData.machineName, deviceData.plant, deviceData.description);
     } else {
       console.log('Update operation canceled.');

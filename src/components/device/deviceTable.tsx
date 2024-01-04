@@ -4,9 +4,10 @@ import { fetchDataFromApi } from "./deviceApi/deviceHitApi";
 
 interface DeviceTableProps {
   apiUrl: string;
+  searchText: string;
 }
 
-const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl }) => {
+const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl, searchText }) => {
   const [deviceData, setDeviceData] = useState([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +15,7 @@ const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl }) => {
     const fetchData = async () => {
       try {
         const apiData = await fetchDataFromApi(apiUrl);
-        const filteredData = apiData.map((item) => ({
+        const mappedData = apiData.map((item) => ({
           id: item.serial_number,
           lastName: item.nama_device,
           firstName: item.mesin,
@@ -22,9 +23,7 @@ const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl }) => {
           desc: item.deskripsi,
         }));
 
-        console.log(apiData)
-
-        setDeviceData(filteredData);
+        setDeviceData(mappedData);
         setError(null);
       } catch (error) {
         console.error("Error setting device data:", error.message);
@@ -36,51 +35,64 @@ const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl }) => {
     fetchData();
   }, [apiUrl]);
 
+  const filteredData = deviceData.filter((row) =>
+    Object.values(row).some(
+      (value) => value && value.toString().toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
+
   const columns: GridColDef[] = [
     {
       field: "id",
       headerName: "Serial Number",
-      width: 200,
+      flex: 1,
     },
     {
       field: "lastName",
       headerName: "Device Name",
-      width: 250,
-      editable: true,
+      flex: 1,
     },
     {
       field: "firstName",
       headerName: "Machine Name",
-      width: 250,
-      editable: true,
+      flex: 1,
     },
     {
       field: "age",
       headerName: "Plant",
-      width: 250,
-      editable: true,
+      flex: 0.7,
     },
     {
       field: "desc",
       headerName: "Deskripsi",
-      width: 250,
-      editable: true,
+      flex: 1,
     },
   ];
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: '1', justifyContent: "center", width: '100%'}}>
       {error ? (
-        <p>{error}</p>
+        <div style={{display: 'flex', justifyContent: "center"}}>
+          <p>{error}</p>
+        </div>
       ) : (
-        <DataGrid
-          rows={deviceData}
-          columns={columns}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[10, 15, 25]}
-        />
+        filteredData.length > 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1  }}>
+            <DataGrid
+              rows={filteredData}
+              columns={columns}
+              initialState={{
+                pagination: { paginationModel: { pageSize: 15 } },
+              }}
+              pageSizeOptions={[15, 25, 30, 35]}
+              hideFooterSelectedRowCount
+            />
+          </div>
+        ) : (
+          <div style={{display: 'flex', justifyContent: "center"}}>
+            <p>Data tidak ditemukan</p>
+          </div>
+        )
       )}
     </div>
   );

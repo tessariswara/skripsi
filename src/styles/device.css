@@ -1,20 +1,27 @@
 .modal {
     display: none;
     position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 1;
-    left: 0;
-    top: 0;
     width: 100%;
     height: 100%;
-    overflow: none;
+    overflow: hidden; 
     background-color: rgba(0, 0, 0, 0.4);
 }
 
+
+
 .modal-content {
     display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     flex-direction: column;
     background-color: #F1EFEE;
-    margin: 8% auto;
+    margin: auto;
     padding: 44.78px;
     border: none;
     border-radius: 25px;
@@ -22,29 +29,57 @@
     gap: 22.18px;
 }
 
+
 .modal-header {
     display: flex;
     justify-content: center;
     margin-bottom: 17px;
 }
 
-.modal-column {
+.modal-column, .modal-colmn {
     font-size: 16px;
     display: flex;
     flex-direction: column;
     flex: 1;
     gap: 10.77px;
 }
-
-.modal-column input, select {
+.modal-column input, .joss {
     font-size: 16px;
-    height: 51.33px;
+    height: 62.33px;
     border: 0;
     border-radius: 10px;
     background-color: white;
     padding: 0 25px;
     appearance: none;
 }
+
+.modal-column input:disabled {
+    background-color: lightgrey;
+}
+
+.modal-column input {
+    font-size: 16px;
+    height: 62.33px;
+    border: 0;
+    border-radius: 10px;
+    background-color: white;
+    padding: 0 25px;
+    appearance: none;
+}
+
+.custom-control {
+    border: 0;
+    border-radius: 10px;
+  }
+  
+  .custom-control-focused {
+    box-shadow: 0 0 0 1px red;
+  }
+  
+  .custom-option-selected {
+    background-color: red;
+    color: white;
+  }
 
 .modal-cta {
     margin-top: 55px;
@@ -80,13 +115,13 @@
 }
 
 .page-table {
-    margin: 52px 0 ;
+    margin: 52px 0 97px 0;
     background-color: #F1EFEE;
-    padding: 51px 85px;
+    padding: 40px 55px;
     border-radius: 20px;
-    
     .MuiDataGrid-root {
         border: none;
+
     }
 
     .MuiDataGrid-root .MuiDataGrid-cell {
@@ -96,11 +131,13 @@
       color: black;
       font-size: 16px;
       line-height: 200px;
+      font-weight: 500;
+
     }
 
     .MuiDataGrid-root .MuiDataGrid-columnHeader {
         font-size: 19px;
-        font-weight: bold;
+        font-weight: 800;
     }
 
 } 

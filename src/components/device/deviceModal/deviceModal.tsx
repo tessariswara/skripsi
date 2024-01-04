@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import DeviceModalConfirm from './deviceModalConfirm';
+import Select from 'react-select';
 import '../../../styles/device.css';
 import { fetchDataFromApi } from '../deviceApi/deviceHitApi';
 import { fetchDataFromTenant } from '../../tenant/tenantApi/tenantHitApi';
 import { tenantUrl } from '../../../App';
 import { deleteDeviceApi } from '../deviceApi/deleteDevice';
+import "../../../styles/device.css"
 
 interface ModalProps {
   title: string;
@@ -50,6 +52,7 @@ const DeviceModal: React.FC<ModalProps> = ({
 }) => {
   const [uhuy, setUhuy] = useState(true);
   const [serialNumber, setSerialNumber] = useState('');
+  const [options, setOptions] = useState([]);
   const [serialNumberSelected, setSerialNumberSelected] = useState(false);
   const [deviceName, setDeviceName] = useState('');
   const [machineName, setMachineName] = useState('');
@@ -58,14 +61,30 @@ const DeviceModal: React.FC<ModalProps> = ({
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [error, setError] = useState<string>('');
   const [plantOptions, setPlantOptions] = useState<string[]>([]);
+  const [forceUpdateKey, setForceUpdateKey] = useState(0);
 
-  const handleCombinedChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    handleSelectChange(event);
-    setSerialNumber(event.target.value);
+  const selectStyle = {
+    control: (provided: any, state: { isDisabled: boolean }) => ({
+      ...provided,
+      fontSize: '16px',
+      padding: '0 0 0 15px',
+      border: 0,
+      borderRadius: '10px',
+      backgroundColor: state.isDisabled ? 'lightgray' : 'white',
+      height: '62.33px',
+    }),
+    option: (provided: any) => ({
+      ...provided,
+    }),
+  };
+
+  const handleCombinedChange = selectedOption => {
+    handleSelectChange(selectedOption);
+    setSerialNumber(selectedOption.value);
   };
   
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedSerialNumber = event.target.value;
+  const handleSelectChange = (selectedOption) => {
+    const selectedSerialNumber = selectedOption.value;
     const selectedDevice = deviceData.find((item) => item.serNum === selectedSerialNumber);
     setSerialNumber(selectedSerialNumber);
     setDeviceName(selectedDevice?.namDev || '');
@@ -75,6 +94,10 @@ const DeviceModal: React.FC<ModalProps> = ({
       setDescription(selectedDevice.namDesc || '');
       setSerialNumberSelected(true);
     }
+  };
+
+  const forceUpdate = () => {
+    setForceUpdateKey((prevKey) => prevKey + 1);
   };
 
   const handleSave = () => {
@@ -100,6 +123,7 @@ const DeviceModal: React.FC<ModalProps> = ({
     try {
       await deleteDeviceApi(apiDelete, plant, [serialNumber]);
       console.log('Data deleted successfully!');
+      forceUpdate();
       handleClose();
     } catch (error) {
       console.error('Error deleting device:', error.message);
@@ -126,7 +150,7 @@ const DeviceModal: React.FC<ModalProps> = ({
     setSerialNumber('');
     setDeviceName('');
     setMachineName('');
-    setPlant(deviceData?.plant || ''); // Menggunakan nilai plant dari deviceData
+    setPlant(deviceData?.plant || '');
     setDescription('');
     setError('');
     setSerialNumberSelected(false);
@@ -144,6 +168,11 @@ const DeviceModal: React.FC<ModalProps> = ({
           namDesc: item.deskripsi,
         }));
         setDeviceData(filteredLagi);
+        const formattedOptions = apiLagi.map(item => ({
+          value: item.serial_number,
+          label: item.serial_number,
+        }));
+        setOptions(formattedOptions);
       } catch (error) {
         console.error("Error setting device data:", error.message);
         setError("Error fetching data from API. Please try again.");
@@ -154,7 +183,8 @@ const DeviceModal: React.FC<ModalProps> = ({
       try {
         const plants = await fetchDataFromTenant(tenantUrl);
         const plantOptions = plants.map((item) => ({
-          Pla: item.plant_name,
+          value: item.plant_name,
+          label: item.plant_name,
         }));
         setPlantOptions(plantOptions);
       } catch (error) {
@@ -169,29 +199,29 @@ const DeviceModal: React.FC<ModalProps> = ({
       resetForm();
     }
   }, [show, apiUrl, tenantUrl]); 
+  
 
   return (
-    <div>
+    <div key={forceUpdateKey}>
       <div className={`modal ${show ? 'visible' : 'hidden'}`}>
         <div className="modal-content">
           <div className="modal-header">
             <h1>{title}</h1>
           </div>
 
-          <div className="modal-column">
+          <div className="modal-colmn">
             <label>Serial Number</label>
             {isEdit ? (
-              <select value={serialNumber} onChange={handleCombinedChange}>
-                <option value="" >Select Serial Number...</option>
-                {Array.isArray(deviceData) &&
-                  deviceData.map((item) => (
-                    <option key={item.serNum} value={item.serNum}>
-                      {item.serNum}
-                    </option>
-                  ))}
-              </select>
+                <Select
+                styles={selectStyle}
+                placeholder="Select Serial Number..."
+                value={serialNumber !== '' ? { value: serialNumber, label: serialNumber } : null}
+                onChange={handleCombinedChange}
+                options={options}
+              />
             ) : (
-              <input
+                <input
+                className='joss'
                 type="text"
                 placeholder="Enter Serial Number"
                 value={serialNumber}
@@ -222,18 +252,16 @@ const DeviceModal: React.FC<ModalProps> = ({
             />
           </div>
 
-          <div className="modal-column">
+          <div className="modal-colmn">
             <label>Plant</label>
-            <select value={plant} disabled={isEdit && !serialNumberSelected} onChange={(e) => setPlant(e.target.value)}
-            >
-              <option value="" disabled={!serialNumberSelected}>Select Plant...</option>
-              {Array.isArray(deviceData) &&
-                plantOptions.map((item) => (
-                  <option key={item.Pla} value={item.Pla}>
-                    {item.Pla}
-                  </option>
-                ))}
-            </select>
+            <Select
+              styles={selectStyle}
+              placeholder="Select Plant..."
+              value={plant !== '' ? { value: plant, label: plant } : null}
+              onChange={(e) => setPlant(e.value)}
+              options={plantOptions}
+              isDisabled={isEdit && !serialNumberSelected}  
+              />
           </div>
 
           <div className="modal-column">
