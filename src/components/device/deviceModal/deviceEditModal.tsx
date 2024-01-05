@@ -36,14 +36,14 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
   handleClose,
   deviceData,
   setDeviceData,
-  showDeleteButton, 
+  showDeleteButton,
   serialNumberSelected,
+  flagDelete
 }) => {
-  const [isDelete, setIsDelete] = useState(true);
-  const handleConfirmation = (confirmed: boolean) => {
-    if (confirmed && isDelete === false) {
-      console.log("masuk nih bos")
-      console.log(deviceData.serialNumber)
+/*  const handleConfirmation = (confirmed: boolean) => {
+    if (confirmed && flagDelete) {
+      console.log("masuk nih bos");
+      const isDelete = true;
       deleteDeviceApi(apiDelete, deviceData.plant, [deviceData.serialNumber])
       .then(() => {
         window.location.reload();
@@ -54,7 +54,7 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
     } else if (confirmed) {
       console.log('Data updated successfully!');
       console.log(deviceData.plant);
-      UpdateDevice(apiPost + '/' + deviceData.serialNumber, deviceData.serialNumber, deviceData.deviceName, deviceData.machineName, deviceData.plant, deviceData.description)
+      /*UpdateDevice(apiPost + '/' + deviceData.serialNumber, deviceData.serialNumber, deviceData.deviceName,>
       // console.log("bro", isDelete)
       .then(() => {
         window.location.reload();
@@ -66,8 +66,7 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
       console.log('Update operation canceled.');
       handleClose();
     }
-  };
-  
+  }; */
 
   return (
     <DeviceModal
@@ -78,15 +77,12 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
       apiDelete={apiDelete}
       show={show}
       handleClose={handleClose}
-      handleConfirmation={handleConfirmation}
       deviceData={deviceData}
       setDeviceData={setDeviceData}
-      showDeleteButton={true} 
+      showDeleteButton={true}
       isEdit={true}
-      isDelete={isDelete}
+      showDeleteButton={true}
     />
-
-
   );
 };
 
