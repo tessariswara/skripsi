@@ -1,0 +1,99 @@
+.filter {
+    display: flex;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.datepicker-wrapper {
+  position:absolute;
+  top: calc(100% + 5px);
+  z-index: 1000;
+}
+
+select.round {
+    background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%);
+    background-position:
+    calc(100% - 30px) 1.4em,
+    calc(100% - 20px) 1.4em,
+    calc(100% - .7em) .7em;
+    background-size:
+    10px 10px,
+    10px 10px,
+    2em 2em;
+    background-repeat: no-repeat;
+    font-size: 18px;
+    border: none;
+    width: 240px;
+    border-radius: 20px;
+    color: black;
+    text-align: left;
+    background-color: #F1EFEE;
+    padding: 8px 25px;
+    height: 60px;
+    appearance: none;
+    cursor: pointer;
+}
+
+select.round:focus {
+    background-image:
+    linear-gradient(45deg, gray 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, gray 50%);
+    background-position:
+    calc(100% - 20px) 1.4em,
+    calc(100% - 30px) 1.4em,
+    calc(100% - .7em) .7em;
+    background-size:
+    10px 10px,
+    10px 10px,
+    2em 2em;
+    background-repeat: no-repeat;
+    border-color: green;
+  outline: 0;
+}
+
+.log-button {
+     font-size: 18px;
+     border: none;
+     width: 240px;
+     border-radius: 20px;
+     color: black;
+     text-align: left;
+     background-color: #F1EFEE;
+     padding: 8px 25px;
+     height: 60px;
+     appearance: none;
+     cursor: pointer;
+}
+
+.log-download {
+     position: absolute;
+     right:130px;
+     font-size: 18px;
+     border: none;
+     width: 240px;
+     border-radius: 20px;
+     color: white;
+     text-align: center;
+     background-color: #EE7214;
+     padding: 8px 25px;
+     height: 60px;
+     appearance: none;
+     cursor: pointer;
+}
+
+.chart {
+     display: flex;
+     margin-top: 80px;
+     background-color: #F1EFEE;
+     border-radius: 50px;
+     height: 570px;
+     width
+}
