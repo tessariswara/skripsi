@@ -32,24 +32,24 @@ const DeviceAddModal: React.FC<AddModalProps> = ({
   setDeviceData,
 }) => {
 
-  const handleConfirmation = (confirmed: boolean) => {
+/*  const handleConfirmation = (confirmed: boolean) => {
     if (confirmed) {
       console.log('Data saved successfully!');
-      AddDevice(apiPost, deviceData.serialNumber, deviceData.deviceName, deviceData.machineName, deviceData.plant, deviceData.description)
+      AddDevice(apiPost, deviceData.serialNumber, deviceData.deviceName, deviceData.machineName, deviceData.p>
       .then(() => {
         window.location.reload();
       })
       .catch((error) => {
         console.error('Error updating device:', error);
       });
-      
+
     } else {
       console.log('Save operation canceled.');
     }
 
     handleClose();
-  };
-  
+  }; */
+
 
   return (
     <DeviceModal
@@ -59,10 +59,10 @@ const DeviceAddModal: React.FC<AddModalProps> = ({
       apiPost={apiPost}
       show={show}
       handleClose={handleClose}
-      handleConfirmation={handleConfirmation}
       deviceData={deviceData}
       setDeviceData={setDeviceData}
       isEdit={false}
+      showDeleteButton={false}
     />
   );
 };
