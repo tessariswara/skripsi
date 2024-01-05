@@ -16,7 +16,7 @@ interface ModalProps {
   apiPost: string;
   apiDelete: string;
   show: boolean;
-  showDeleteButton?: boolean;
+  showDeleteButton: boolean;
   handleClose: () => void;
   handleConfirmation: (confirmed: boolean) => void;
   isEdit,
@@ -44,13 +44,12 @@ const DeviceModal: React.FC<ModalProps> = ({
   apiDelete,
   show,
   handleClose,
-  handleConfirmation: propHandleConfirmation,
+  showDeleteButton,
   deviceData,
   setDeviceData,
   isEdit,
 }) => {
   const [isDelete, setIsDelete] = useState(true);
-  const [showDeleteButton, setShowDeleteButton] = useState(true);
   const [serialNumber, setSerialNumber] = useState('');
   const [options, setOptions] = useState([]);
   const [serialNumberSelected, setSerialNumberSelected] = useState(false);
@@ -82,7 +81,7 @@ const DeviceModal: React.FC<ModalProps> = ({
     handleSelectChange(selectedOption);
     setSerialNumber(selectedOption.value);
   };
-  
+
   const handleSelectChange = (selectedOption) => {
     const selectedSerialNumber = selectedOption.value;
     const selectedDevice = deviceData.find((item) => item.serNum === selectedSerialNumber);
@@ -127,29 +126,12 @@ const DeviceModal: React.FC<ModalProps> = ({
     });
     setIsDelete(false)
     setShowConfirmationModal(true);
-    // try {
-    //   await deleteDeviceApi(apiDelete, plant, [serialNumber]);
-    //   console.log('Data deleted successfully!');
-    //   forceUpdate();
-    //   handleClose();
-    // } catch (error) {
-    //   console.error('Error deleting device:', error.message);
-    // }
   };
   const handleConfirmation = (confirmed: boolean) => {
     setShowConfirmationModal(false);
-
-    if (confirmed) {
-      console.log('Data saved successfully!');
-      propHandleConfirmation(true);
-    } else {
-      console.log('Save operation canceled.');
-      propHandleConfirmation(false);
-    }
-
+    setIsDelete(true);
     handleClose();
   };
-  
 
   const resetForm = () => {
     setSerialNumber('');
@@ -193,17 +175,16 @@ const DeviceModal: React.FC<ModalProps> = ({
     //     setPlantOptions(plantOptions);
     //   } catch (error) {
     //     console.error("Error fetching plant options:", error.message);
-    //     setPlantOptions([]); 
+    //     setPlantOptions([]);
     //   }
     // };
-    
     // fetchPlants();
     fetchDa();
     if (show) {
       resetForm();
     }
-  }, [show]); 
-  
+  }, [show]);
+
   useEffect(() => {
     const fetchPlants = async () => {
       try {
@@ -215,7 +196,7 @@ const DeviceModal: React.FC<ModalProps> = ({
         setPlantOptions(plantOptions);
       } catch (error) {
         console.error("Error fetching plant options:", error.message);
-        setPlantOptions([]); 
+        setPlantOptions([]);
       }
     };
     return ()=> fetchPlants();
@@ -280,7 +261,7 @@ const DeviceModal: React.FC<ModalProps> = ({
               value={plant !== '' ? { value: plant, label: plant } : null}
               onChange={(e) => setPlant(e.value)}
               options={plantOptions}
-              isDisabled={isEdit && !serialNumberSelected}  
+              isDisabled={isEdit && !serialNumberSelected}
               />
           </div>
 
@@ -313,9 +294,13 @@ const DeviceModal: React.FC<ModalProps> = ({
       </div>
 
       <DeviceModalConfirm
+        titleButton={titleButton}
         show={showConfirmationModal}
         handleConfirmation={handleConfirmation}
         isDelete={isDelete}
+        apiPost={apiPost}
+        apiDelete={apiDelete}
+        deviceData={deviceData}
       />
     </div>
   );
