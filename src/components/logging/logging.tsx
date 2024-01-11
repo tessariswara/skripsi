@@ -4,7 +4,8 @@ import "../../index.css"
 import { LineChart } from '@mui/x-charts/LineChart';
 import DatePicker from "react-datepicker";
 import "../../../node_modules/react-datepicker/dist/react-datepicker.css";
-
+import "../../index.css"
+import Select from 'react-select';
 interface Device {
   serial_number: string;
 }
@@ -22,8 +23,26 @@ const Logging: React.FC = () => {
   const [xData, setXData] = useState([]);
   const [yData, setYData] = useState([]);
 
+  const selectStyle = {
+    control: (provided: any, state: { isDisabled: boolean }) => ({
+      ...provided,
+      fontSize: '18px',
+      padding: '8px 2px 8px 20px',
+      border: 'none',
+      borderRadius: '20px',
+      backgroundColor: '#F1EFEE',
+      height: '62.33px',
+      textAlign: 'left',
+      width: '240px',
+      height: '60px',
+    }),
+    option: (provided: any) => ({
+      ...provided,
+    }),
+  };
+
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDevice(e.target.value);
+    setSelectedDevice(e.value);
   };
 
   const changeDateFrom = (e) => {
@@ -63,7 +82,11 @@ const Logging: React.FC = () => {
         }
         const jsonData = await response.json();
         const deviceData = jsonData.data.response;
-        setDevices(deviceData);
+        const formattedOptions = deviceData.map((item) => ({
+          value: item.serial_number,
+          label: item.serial_number,
+        }));
+        setDevices(formattedOptions);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -114,7 +137,7 @@ const Logging: React.FC = () => {
       console.log(apiDownloadLog);
       const link = document.createElement('a');
       link.href = apiDownloadLog;
-      link.setAttribute('download', ''); // Empty attribute for preformatted filename and format
+      link.setAttribute('download', '');
       link.style.display = 'none';
       document.body.appendChild(link);
 
@@ -136,39 +159,42 @@ const Logging: React.FC = () => {
                             <h1>Logging</h1>
                         </div>
                     </div>
-                    <div className='filter'>
-                        <select className='round' value={selectedDevice} onChange={handleSelectChange}>
-                             <option value="">List Device</option>
-                             {devices.map((device, index) => (
-                                 <option key={index} value={device.serial_number}>
-                                     {device.serial_number}
-                                 </option>
-                              ))}
-                        </select>
-                        <div className="button-wrapper">
-                            <button className='log-button' onClick={clickDateFrom}>
-                             {textDateFrom}
-                            </button>
-                            {dateFromOpen && (
-                            <div className="datepicker-wrapper">
-                              <DatePicker selected={dateFrom} onChange={changeDateFrom} inline />
-                            </div>
-                            )}
+                      <div className='page-header log'>
+                        <div className='page-control'>
+                            <Select
+                              styles={selectStyle}
+                              placeholder="Serial Number..."
+                              value={selectedDevice !== '' ? { value: selectedDevice, label: selectedDevice } : null}
+                              onChange={handleSelectChange}
+                              options={devices}
+                            />
+                          <div className="button-wrapper">
+                              <button className='log-button' onClick={clickDateFrom}>
+                              {textDateFrom}
+                              </button>
+                              {dateFromOpen && (
+                              <div className="datepicker-wrapper">
+                                <DatePicker selected={dateFrom} onChange={changeDateFrom} inline />
+                              </div>
+                              )}
+                          </div>
+                          <div className="button-wrapper">
+                              <button className='log-button' onClick={clickDateTo}>
+                              {textDateTo}
+                              </button>
+                              {dateToOpen && (
+                              <div className="datepicker-wrapper">
+                                <DatePicker selected={dateTo} onChange={changeDateTo} inline />
+                              </div>
+                              )}
+                          </div>
                         </div>
-                        <div className="button-wrapper">
-                            <button className='log-button' onClick={clickDateTo}>
-                             {textDateTo}
-                            </button>
-                            {dateToOpen && (
-                            <div className="datepicker-wrapper">
-                              <DatePicker selected={dateTo} onChange={changeDateTo} inline />
-                            </div>
-                            )}
+                        <div className='b'>
+                          <button className='log-download' onClick={downloadLog}>
+                            Download
+                          </button>
                         </div>
-                        <button className='log-download' onClick={downloadLog}>
-                          Download
-                        </button>
-                    </div>
+                      </div>
                     <div className='chart'>
                         <LineChart
                           height={540}
@@ -191,3 +217,13 @@ const Logging: React.FC = () => {
 };
 
 export default Logging;
+
+// GAK KEPAKE TAPI LUMAYAN BUAT BACKUP
+{/* <select className='round' value={selectedDevice} onChange={handleSelectChange}>
+  <option value="">List Device</option>
+    {devices.map((device, index) => (
+        <option key={index} value={device.serial_number}>
+            {device.serial_number}
+        </option>
+      ))}
+</select> */}

@@ -1,7 +1,6 @@
-.filter {
-    display: flex;
-    margin-top: 30px;
-    gap: 20px;
+.log {
+  margin-top: 45px;
+  align-items: center;
 }
 
 .button-wrapper {
@@ -74,8 +73,6 @@ select.round:focus {
 }
 
 .log-download {
-     position: absolute;
-     right:130px;
      font-size: 18px;
      border: none;
      width: 240px;
@@ -91,9 +88,8 @@ select.round:focus {
 
 .chart {
      display: flex;
-     margin-top: 80px;
+     margin-top: 52px;
      background-color: #F1EFEE;
      border-radius: 50px;
      height: 570px;
-     width
 }
