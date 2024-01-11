@@ -49,7 +49,6 @@ const DeviceAddModal: React.FC<AddModalProps> = ({
 
     handleClose();
   };
-  
 
   return (
     <DeviceModal
@@ -63,6 +62,7 @@ const DeviceAddModal: React.FC<AddModalProps> = ({
       deviceData={deviceData}
       setDeviceData={setDeviceData}
       isEdit={false}
+      showDeleteButton={false}
     />
   );
 };

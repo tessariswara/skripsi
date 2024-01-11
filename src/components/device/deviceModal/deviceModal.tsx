@@ -16,7 +16,7 @@ interface ModalProps {
   apiPost: string;
   apiDelete: string;
   show: boolean;
-  showDeleteButton?: boolean;
+  showDeleteButton: boolean;
   handleClose: () => void;
   handleConfirmation: (confirmed: boolean) => void;
   isEdit,
@@ -128,7 +128,7 @@ const DeviceModal: React.FC<ModalProps> = ({
   const handleCombinedChange = selectedOption => {
     handleSelectChange(selectedOption);
   };
-  
+
   const handleSelectChange = (selectedOption) => {
     const selectedSerialNumber = selectedOption.value;
     const selectedDevice = deviceData.find((item) => item.serNum === selectedSerialNumber);
@@ -276,7 +276,7 @@ const DeviceModal: React.FC<ModalProps> = ({
               value={plant !== '' ? { value: plant, label: plant } : null}
               onChange={(e) => setPlant(e.value)}
               options={plantOptions}
-              isDisabled={isEdit && !serialNumberSelected}  
+              isDisabled={isEdit && !serialNumberSelected}
               />
           </div>
 
