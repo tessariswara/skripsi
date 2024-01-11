@@ -30,7 +30,7 @@
 }
 
 .navbar-user-photo {
-    background-color: #FF674F;
+    background-color: #F6EDE4;
     width: 56px;
     height: 56px;
     align-items: center;
@@ -43,3 +43,4 @@
     flex-direction: column;
     gap: 2px;
 }
+

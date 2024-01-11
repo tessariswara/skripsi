@@ -1,69 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import DeviceModalConfirm from './deviceModalConfirm';
+import TenantModalConfirm from './tenantModalConfirm';
 import Select from 'react-select';
 import '../../../styles/device.css';
-import { deleteDeviceApi } from '../deviceApi/deleteDevice';
+// import { deleteDeviceApi } from '../deviceApi/deleteDevice';
+import { deleteTenantApi } from '../tenantApi/deleteTenant'
 import "../../../styles/device.css"
-import DeviceEditModal from './deviceEditModal';
-import { mappedData, MappedDataItem } from '../deviceTable';
-import { tenData, TenDataItem } from '../../device/deviceTable';
+import TenantEditModal from './tenantEditModal';
+import { tenData, TenDataItem } from '../tenantTable';
 
 
 interface ModalProps {
   title: string;
   titleButton: string;
-  apiUrl: string;
-  apiPost: string;
-  apiDelete: string;
+  tenantUrl: string;
+  tenantPost: string;
+  tenantDelete: string;
   show: boolean;
   showDeleteButton?: boolean;
   handleClose: () => void;
   handleConfirmation: (confirmed: boolean) => void;
   isEdit,
-  deviceData: {
-    serialNumber: string;
-    deviceName: string;
-    machineName: string;
-    plant: string;
+  tenanData: {
+    plantName: string;
+    address: string;
     description: string;
   };
-  setDeviceData: React.Dispatch<React.SetStateAction<{
-    serialNumber: string;
-    deviceName: string;
-    machineName: string;
-    plant: string;
+  setTenanData: React.Dispatch<React.SetStateAction<{
+    plantName: string;
+    address: string;
     description: string;
   }>>;
 }
 
-const DeviceModal: React.FC<ModalProps> = ({
+const TenantModal: React.FC<ModalProps> = ({
   title,
   titleButton,
-  apiUrl,
-  apiPost,
-  apiDelete,
+  tenantUrl,
+  tenantPost,
+  tenantDelete,
   show,
   showDeleteButton,
   handleClose,
   handleConfirmation: propHandleConfirmation,
-  deviceData,
-  setDeviceData,
+  tenanData,
+  setTenanData,
   isEdit,
 }) => {
   const [isDelete, setIsDelete] = useState(true);
-  const [serialNumberSelected, setSerialNumberSelected] = useState(false);
+  const [plantSelected, setPlantSelected] = useState(false);
 
-  const [serialNumber, setSerialNumber] = useState('');
-  const [deviceName, setDeviceName] = useState('');
-  const [machineName, setMachineName] = useState('');
-  const [plant, setPlant] = useState('');
+  const [plantName, setPlantName] = useState('');
+  const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [error, setError] = useState<string>('');
 
   const [options, setOptions] = useState([]);
-  const [plantOptions, setPlantOptions] = useState<string[]>([]);
   const [forceUpdateKey, setForceUpdateKey] = useState(0);
 
   const selectStyle = {
@@ -83,64 +76,40 @@ const DeviceModal: React.FC<ModalProps> = ({
 
 
   useEffect(() => {
-    const damn = async () => {
+    const bismillah = async () => {
       try {
-        const filteredLagi: MappedDataItem[] = (mappedData || []).map((item) => ({
-        serNum: item.id,
-        namDev: item.namDev,
-        nameMac: item.namMac,
-        namPla: item.namPla,
-        namDesc: item.namDesc,
+        const filteredLagi: TenDataItem[] = (tenData || []).map((item) => ({
+        namaPlant: item.id,
+        alamat: item.lastName,
+        deskripsi: item.firstName,
       }));
-        setDeviceData(filteredLagi);
-        const formattedOptions: MappedDataItem[] = (mappedData || []).map((item) => ({
+        setTenanData(filteredLagi);
+        console.log("ini bos", tenData)
+        const formattedOptions: TenDataItem[] = (tenData || []).map((item) => ({
           value: item.id,
           label: item.id,
         }));
         setOptions(formattedOptions);
       } catch (error) {
-        // console.error('Gagal menerima informasi : ', error);
+        // kosongin aza
       }
     };
   
-    damn();
-  }, [mappedData]);
-
-  useEffect(() => {
-    const tnt = async () => {
-      try {
-        const tenantOpt: TenDataItem[] = (tenData || []).map((item) => ({
-          value: item.namaplant,
-          label: item.namaplant,
-        }));
-        console.log("ini bos", tenData)
-        setPlantOptions(tenantOpt);
-      } catch (error) {
-        console.error("Error fetching plant options:", error.message);
-        setPlantOptions([]); 
-      }
-    };
-    tnt();
+    bismillah();
   }, [tenData]);
-
-
 
   const handleCombinedChange = selectedOption => {
     handleSelectChange(selectedOption);
   };
   
   const handleSelectChange = (selectedOption) => {
-    const selectedSerialNumber = selectedOption.value;
-    const selectedDevice = deviceData.find((item) => item.serNum === selectedSerialNumber);
-
-    if (selectedDevice) {
-      setSerialNumberSelected(true);
-
-      setSerialNumber(selectedSerialNumber);
-      setDeviceName(selectedDevice.namDev || '');
-      setMachineName(selectedDevice.nameMac || '');
-      setPlant(selectedDevice.namPla || '');
-      setDescription(selectedDevice.namDesc || '');
+    const selectedPlantName = selectedOption.value;
+    const selectedTenant = tenanData.find((item) => item.namaPlant === selectedPlantName);
+    if (selectedTenant) {
+      setPlantSelected(true);
+      setPlantName(selectedPlantName);
+      setAddress(selectedTenant.alamat || '');
+      setDescription(selectedTenant.deskripsi || '');
     }
   };
 
@@ -149,17 +118,14 @@ const DeviceModal: React.FC<ModalProps> = ({
   };
 
   const handleSave = () => {
-    if (serialNumber && deviceName && machineName && plant && description) {
-      setDeviceData({
-        serialNumber,
-        deviceName,
-        machineName,
-        plant,
+    if (plantName && address && description) {
+      setTenanData({
+        plantName,
+        address,
         description,
       });
-      console.log(plant)
       setShowConfirmationModal(true);
-      console.log("ini device data", serialNumber)
+      console.log("cek plant", plantName, address, description)
       setError('');
     } else {
       setError('**Please fill all input forms');
@@ -167,18 +133,16 @@ const DeviceModal: React.FC<ModalProps> = ({
   };
 
   const handleDelete = async () => {
-    if (serialNumber && deviceName && machineName && plant && description) {
-      setDeviceData({
-        serialNumber,
-        deviceName,
-        machineName,
-        plant,
-        description,
-      });
+    if (plantName && address && description) {
+        setTenanData({
+          plantName,
+          address,
+          description,
+        });
       setIsDelete(false)
       setShowConfirmationModal(true);
       try {
-        await deleteDeviceApi(apiDelete, plant, [serialNumber]);
+        await deleteTenantApi(tenantDelete, address, [plantName]);
         console.log('Data deleted successfully!');
       } catch (error) {
         console.error('Error deleting device:', error.message);
@@ -202,13 +166,11 @@ const DeviceModal: React.FC<ModalProps> = ({
   };
 
   const resetForm = () => {
-    setSerialNumber('');
-    setDeviceName('');
-    setMachineName('');
-    setPlant('');
+    setPlantName('');
+    setAddress('');
     setDescription('');
     setError('');
-    setSerialNumberSelected(false);
+    setPlantSelected(false);
   };
 
   useEffect(() => {
@@ -226,12 +188,12 @@ const DeviceModal: React.FC<ModalProps> = ({
           </div>
 
           <div className="modal-colmn">
-            <label>Serial Number</label>
+            <label>Plant Name</label>
             {isEdit ? (
                 <Select
                 styles={selectStyle}
-                placeholder="Select Serial Number..."
-                value={serialNumber !== '' ? { value: serialNumber, label: serialNumber } : null}
+                placeholder="Select Plant Name..."
+                value={plantName !== '' ? { value: plantName, label: plantName } : null}
                 onChange={handleCombinedChange}
                 options={options}
               />
@@ -239,46 +201,24 @@ const DeviceModal: React.FC<ModalProps> = ({
                 <input
                 className='joss'
                 type="text"
-                placeholder="Enter Serial Number"
-                value={serialNumber}
-                onChange={(e) => setSerialNumber(e.target.value)}
+                placeholder="Enter Plant Name"
+                value={plantName}
+                onChange={(e) => setPlantName(e.target.value)}
               />
             )}
           </div>
 
           <div className="modal-column">
-            <label>Device Name</label>
+            <label>Address</label>
             <input
               type="text"
-              placeholder="Enter Device Name"
-              value={deviceName}
-              onChange={(e) => setDeviceName(e.target.value)}
-              disabled={isEdit && !serialNumberSelected}
+              placeholder="Enter Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              disabled={isEdit && !plantSelected}
             />
           </div>
 
-          <div className="modal-column">
-            <label>Machine Name</label>
-            <input
-              type="text"
-              placeholder="Enter Machine Name"
-              value={machineName}
-              onChange={(e) => setMachineName(e.target.value)}
-              disabled={isEdit && !serialNumberSelected}
-            />
-          </div>
-
-          <div className="modal-colmn">
-            <label>Plant</label>
-            <Select
-              styles={selectStyle}
-              placeholder="Select Plant..."
-              value={plant !== '' ? { value: plant, label: plant } : null}
-              onChange={(e) => setPlant(e.value)}
-              options={plantOptions}
-              isDisabled={isEdit && !serialNumberSelected}  
-              />
-          </div>
 
           <div className="modal-column">
             <label>Description</label>
@@ -287,7 +227,7 @@ const DeviceModal: React.FC<ModalProps> = ({
               placeholder="Enter description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              disabled={isEdit && !serialNumberSelected}
+              disabled={isEdit && !plantSelected}
             />
             {error && <p className='error'>{error}</p>}
           </div>
@@ -308,7 +248,7 @@ const DeviceModal: React.FC<ModalProps> = ({
         </div>
       </div>
 
-      <DeviceModalConfirm
+      <TenantModalConfirm
         show={showConfirmationModal}
         handleConfirmation={handleConfirmation}
         isDelete={isDelete}
@@ -318,7 +258,7 @@ const DeviceModal: React.FC<ModalProps> = ({
   );
 };
 
-export default DeviceModal;
+export default TenantModal;
 
 
 // GAK KEPAKE TAPI LUMAYAN BUAT BACKUP

@@ -1,39 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { fetchDataFromApi } from "./deviceApi/deviceHitApi";
+import { fetchData, cachedData } from "./deviceApi/hitApi";
+import { fetchTenant, tenantData } from "../tenant/tenantApi/hitTenant";
+import DeviceModal from "./deviceModal/deviceModal";
+
 
 interface DeviceTableProps {
   apiUrl: string;
   searchText: string;
 }
+export interface MappedDataItem {
+  id: string;
+  namDev: string;
+  namMac: string;
+  namPla: string;
+  namDesc: string;
+}
 
-const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl, searchText }) => {
+export interface TenDataItem {
+  namaplant: string;
+  alamatplant: string;
+  deskripsiplant: string;
+}
+
+export let mappedData: MappedDataItem[] | undefined;
+export let tenData: TenDataItem[] | undefined;
+
+const DeviceTable: React.FC<DeviceTableProps> = ({searchText }) => {
   const [deviceData, setDeviceData] = useState([]);
   const [error, setError] = useState<string | null>(null);
 
+  const main = async () => {
+    try {
+      await fetchData();
+      mappedData = cachedData.map((item: any) => ({
+        id: item.serial_number,
+        namDev: item.nama_device,
+        namMac: item.mesin,
+        namPla: item.plant,
+        namDesc: item.deskripsi,
+      }));
+      setDeviceData(mappedData);
+    } catch (error) {
+      console.error('Gagal menerima informasi : ', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const apiData = await fetchDataFromApi(apiUrl);
-        const mappedData = apiData.map((item) => ({
-          id: item.serial_number,
-          lastName: item.nama_device,
-          firstName: item.mesin,
-          age: item.plant,
-          desc: item.deskripsi,
-        }));
+    return () => main();
+  }, []);
 
-        setDeviceData(mappedData);
-        setError(null);
-      } catch (error) {
-        console.error("Error setting device data:", error.message);
-        setError("Gagal menerima informasi, periksa kembali server Anda.");
-        setDeviceData([]);
-      }
-    };
+  const mains = async () => {
+    try {
+      await fetchTenant();
+      tenData = tenantData.map((item: any) => ({
+          namaplant: item.plant_name,
+          alamatplant: item.alamat,
+          deskripsiplant: item.deskripsi,
+      }));
+    } catch (error) {
+      console.error('Gagal menerima informasi : ', error);
+    }
+  };
 
-    fetchData();
-  }, [apiUrl]);
+    
+  useEffect(() => {
+    return () => mains();
+  }, []);
 
   const filteredData = deviceData.filter((row) =>
     Object.values(row).some(
@@ -48,22 +81,22 @@ const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl, searchText }) => {
       flex: 1,
     },
     {
-      field: "lastName",
+      field: "namDev",
       headerName: "Device Name",
       flex: 1,
     },
     {
-      field: "firstName",
+      field: "namMac",
       headerName: "Machine Name",
       flex: 1,
     },
     {
-      field: "age",
+      field: "namPla",
       headerName: "Plant",
       flex: 0.7,
     },
     {
-      field: "desc",
+      field: "namDesc",
       headerName: "Deskripsi",
       flex: 1,
     },
@@ -94,7 +127,12 @@ const DeviceTable: React.FC<DeviceTableProps> = ({ apiUrl, searchText }) => {
           </div>
         )
       )}
+        <DeviceModal
+          mappedData={mappedData} 
+          tenData={tenData}
+        />
     </div>
+    
   );
 };
 

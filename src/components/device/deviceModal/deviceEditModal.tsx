@@ -36,14 +36,11 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
   handleClose,
   deviceData,
   setDeviceData,
-  showDeleteButton, 
-  serialNumberSelected,
 }) => {
   const [isDelete, setIsDelete] = useState(true);
   const handleConfirmation = (confirmed: boolean) => {
     if (confirmed && isDelete === false) {
-      console.log("masuk nih bos")
-      console.log(deviceData.serialNumber)
+      console.log("apa cik", deviceData.serialNumber)
       deleteDeviceApi(apiDelete, deviceData.plant, [deviceData.serialNumber])
       .then(() => {
         window.location.reload();
@@ -51,11 +48,9 @@ const DeviceEditModal: React.FC<EditModalProps> = ({
       .catch((error) => {
         console.error('Error updating device:', error);
       });
+
     } else if (confirmed) {
-      console.log('Data updated successfully!');
-      console.log(deviceData.plant);
       UpdateDevice(apiPost + '/' + deviceData.serialNumber, deviceData.serialNumber, deviceData.deviceName, deviceData.machineName, deviceData.plant, deviceData.description)
-      // console.log("bro", isDelete)
       .then(() => {
         window.location.reload();
       })
