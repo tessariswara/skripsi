@@ -84,7 +84,6 @@ const TenantModal: React.FC<ModalProps> = ({
         deskripsi: item.firstName,
       }));
         setTenanData(filteredLagi);
-        console.log("ini bos", tenData)
         const formattedOptions: TenDataItem[] = (tenData || []).map((item) => ({
           value: item.id,
           label: item.id,

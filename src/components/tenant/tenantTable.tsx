@@ -30,7 +30,6 @@ const TenantTable: React.FC<TenantTableProps> = ({searchText }) => {
           firstName: item.deskripsi,
       }));
       setDeviceData(tenData);
-      console.log("hahat : ", tenData)
     } catch (error) {
       console.error('Gagal menerima informasi : ', error);
     }

@@ -155,7 +155,7 @@ const Logging: React.FC = () => {
             <div className='border-container'>
                 <div className='content-container'>
                     <div className='page-header'>
-                        <div className='page-tittle'>
+                        <div className='page-title'>
                             <h1>Logging</h1>
                         </div>
                     </div>
@@ -163,7 +163,7 @@ const Logging: React.FC = () => {
                         <div className='page-control'>
                             <Select
                               styles={selectStyle}
-                              placeholder="Serial Number..."
+                              placeholder="List Device..."
                               value={selectedDevice !== '' ? { value: selectedDevice, label: selectedDevice } : null}
                               onChange={handleSelectChange}
                               options={devices}

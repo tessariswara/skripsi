@@ -1,4 +1,4 @@
-const apiUrl = "http://178.128.107.238:5000/api/device/plantA/allDevice";
+const apiUrl = "http://178.128.107.238:5000/api/device/Data/allDevice";
 
 export let cachedData: any;
 
