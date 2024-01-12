@@ -16,6 +16,8 @@
     flex-direction: row;
     justify-content: space-between;
     flex: 1;
+    align-items: center;
+    font-size: 21px;
 }
 
 .page-title {
@@ -31,6 +33,7 @@
 }
 
 .page-title h1 span {
+    align-items: center;
     font-size: 48px;
     line-height: 72px;
     font-weight: 700;
@@ -50,6 +53,7 @@
 }
 
 .page-plant-card {
+    cursor: pointer;
     background-color: rgba(241, 239, 238, 1) ;
     display: flex;
     padding: 19px 30px;
@@ -60,8 +64,12 @@
     width: 350px;
 }
 
-.text {
+.page-plant-card:active {
+    filter: invert();
+    
+}
 
+.text {
     display: flex;
     flex-direction: column;
 }
@@ -78,23 +86,35 @@
 .card-container {
     display: flex;
     flex-direction: column;
-    gap: 50px;
+}
+
+.card-plant {
+    margin: 40px 0 29px 0;
+}
+.card-plant h2 {
+    font-size: 32px;
+    font-weight: 600;
 }
 
 .card-content {
+    overflow: hidden;
+}
+
+.card-content-isi {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
     gap: 36px;
 }
+
 
 .card-content-container {
     display: flex;
     flex-direction: column;
+    background-color: #D9D9D9;
     gap: 15px;
-    background-color: #7896FF;
-    padding: 35px 44px;
+    padding: 35px 35px 20px 35px;
     border-radius: 30px;
-    width: fit-content;
 }
 
 .content {
@@ -107,24 +127,56 @@
     font-size: 80px;
 }
 
+.dev h3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+  }
+
 .value {
     gap: 10px;
     padding: 0;
     display: flex;
     flex-direction: row;
-    align-items: first baseline;
+    align-items:self-start;
+    flex: 1;
 }
+
+.value h1 {
+    margin-top: -13px;
+}
+
+
 
 .content span {
     display: flex;
     justify-content: space-between;
-    align-items: ;
 }
 
 
 .rnd {
-    background-color: red;
+    background-color: #FF674F;
     width: 25px;
     height: 25px;
     border-radius: 100%;
+}
+
+.connect {
+    background-color: #619A74;
+}
+
+.pressure {
+    background-color: #000000;
+    color: white;
+}
+
+.humidity {
+    background-color: #7896FF;
+    color: black;
+}
+
+.temperature {
+    background-color: #FEA26E;
+    color: black;
 }
