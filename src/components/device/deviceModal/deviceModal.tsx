@@ -52,16 +52,14 @@ const DeviceModal: React.FC<ModalProps> = ({
 }) => {
   const [isDelete, setIsDelete] = useState(true);
   const [serialNumberSelected, setSerialNumberSelected] = useState(false);
-
+  const [resetData, setResetData] = useState(false);
   const [serialNumber, setSerialNumber] = useState('');
   const [deviceName, setDeviceName] = useState('');
   const [machineName, setMachineName] = useState('');
   const [plant, setPlant] = useState('');
   const [description, setDescription] = useState('');
-
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [error, setError] = useState<string>('');
-
   const [options, setOptions] = useState([]);
   const [plantOptions, setPlantOptions] = useState<string[]>([]);
   const [forceUpdateKey, setForceUpdateKey] = useState(0);
@@ -85,7 +83,7 @@ const DeviceModal: React.FC<ModalProps> = ({
   useEffect(() => {
     const damn = async () => {
       try {
-        const filteredLagi: MappedDataItem[] = (mappedData || []).map((item) => ({
+        const filteredLagi: MappedDataItem[] = (mappedData || []).map((item) =>  ({
         serNum: item.id,
         namDev: item.namDev,
         nameMac: item.namMac,
@@ -102,9 +100,9 @@ const DeviceModal: React.FC<ModalProps> = ({
         // console.error('Gagal menerima informasi : ', error);
       }
     };
-  
+
     damn();
-  }, [mappedData]);
+  }, [mappedData,resetData]);
 
   useEffect(() => {
     const tnt = async () => {
@@ -117,7 +115,7 @@ const DeviceModal: React.FC<ModalProps> = ({
         setPlantOptions(tenantOpt);
       } catch (error) {
         console.error("Error fetching plant options:", error.message);
-        setPlantOptions([]); 
+        setPlantOptions([]);
       }
     };
     tnt();
@@ -132,6 +130,7 @@ const DeviceModal: React.FC<ModalProps> = ({
   const handleSelectChange = (selectedOption) => {
     const selectedSerialNumber = selectedOption.value;
     const selectedDevice = deviceData.find((item) => item.serNum === selectedSerialNumber);
+
 
     if (selectedDevice) {
       setSerialNumberSelected(true);
@@ -177,28 +176,22 @@ const DeviceModal: React.FC<ModalProps> = ({
       });
       setIsDelete(false)
       setShowConfirmationModal(true);
-      try {
-        await deleteDeviceApi(apiDelete, plant, [serialNumber]);
-        console.log('Data deleted successfully!');
-      } catch (error) {
-        console.error('Error deleting device:', error.message);
-      }
     } else {
       setError('**Please fill all input forms');
     }
   };
 
-  const handleConfirmation = (confirmed: boolean) => {
+  const handleConfirmation = (confirmed: boolean, isDelete) => {
     setShowConfirmationModal(false);
+    setResetData(!resetData);
     if (confirmed) {
       console.log('Data saved successfully!');
-      propHandleConfirmation(true);
+      propHandleConfirmation(true,isDelete);
     } else {
       console.log('Save operation canceled.');
       propHandleConfirmation(false);
     }
-
-    handleClose();
+    setIsDelete(true);
   };
 
   const resetForm = () => {
@@ -215,8 +208,8 @@ const DeviceModal: React.FC<ModalProps> = ({
     if (show) {
       resetForm();
     }
-  }, [show]); 
-  
+  }, [show]);
+
   return (
     <div key={forceUpdateKey}>
       <div className={`modal ${show ? 'visible' : 'hidden'}`}>
@@ -317,67 +310,4 @@ const DeviceModal: React.FC<ModalProps> = ({
     </div>
   );
 };
-
 export default DeviceModal;
-
-
-// GAK KEPAKE TAPI LUMAYAN BUAT BACKUP
-
-// import { fetchDataFromApi } from '../deviceApi/deviceHitApi';
-// import { fetchDataFromTenant } from '../../tenant/tenantApi/tenantHitApi';    1
-// import { tenantUrl } from '../../../App';
-// import { fetchData, cachedData } from '../deviceApi/hitApi';
-
-  //   const fetchDa = async () => {
-  //     try {
-  //       const apiLagi = await fetchDataFromApi(apiUrl);
-  //       const filteredLagi = apiLagi.map((item) => ({
-  //         serNum: item.serial_number,
-  //         namDev: item.nama_device,
-  //         nameMac: item.mesin,
-  //         namPla: item.plant,
-  //         namDesc: item.deskripsi,
-  //       }));
-  //       setDeviceData(filteredLagi);
-  //       const formattedOptions = apiLagi.map(item => ({
-  //         value: item.serial_number,
-  //         label: item.serial_number,
-  //       }));
-  //       setOptions(formattedOptions);
-  //     } catch (error) {
-  //       console.error("Error setting device data:", error.message);
-  //       setError("Error fetching data from server. Please try again.");
-  //     }
-  //   };
-  //   const fetchPlants = async () => {
-  //     try {
-  //       const plants = await fetchDataFromTenant(tenantUrl);
-  //       const plantOptions = plants.map((item) => ({
-  //         value: item.plant_name,
-  //         label: item.plant_name,
-  //       }));
-  //       setPlantOptions(plantOptions);
-  //     } catch (error) {
-  //       console.error("Error fetching plant options:", error.message);
-  //       setPlantOptions([]); 
-  //     }
-  //   };
-    
-  //   fetchPlants();
-  //   fetchDa();
-  // useEffect(() => {
-  //   const fetchPlants = async () => {
-  //     try {
-  //       const plants = await fetchDataFromTenant(tenantUrl);
-  //       const plantOptions = plants.map((item) => ({
-  //         value: item.plant_name,
-  //         label: item.plant_name,
-  //       }));
-  //       setPlantOptions(plantOptions);
-  //     } catch (error) {
-  //       console.error("Error fetching plant options:", error.message);
-  //       setPlantOptions([]); 
-  //     }
-  //   };
-  //   return ()=> fetchPlants();
-  // }, [])
