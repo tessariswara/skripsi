@@ -2,10 +2,19 @@ import React, {useState, useEffect, ChangeEvent } from 'react';
 import "../../styles/dashboard.css"
 import logoPlant from  "../../assets/Vector.svg"
 import {dataDash, allData} from "../dashboard/showData.tsx"
+import Card from './card.tsx';
+
+interface CardData {
+    flag: string;
+    serialNumber: string;
+    deviceName: string;
+    temperature: number;
+  }
 
 const Dashboard: React.FC = () => {
     const [value, setValue] = useState('');
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [cardData, setCardData] = useState<CardData[]>([])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -15,11 +24,14 @@ const Dashboard: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const hitApi = () => {
-    //   console.log("ini dash", value);
-      allData(value);
-      console.log("ini dataDash", dataDash)
-    };
+    const hitApi = async () => {
+        await allData(value);
+        console.log("ini dataDash", dataDash);
+        setCardData(dataDash);
+      };
+
+      useEffect(() => {
+      }, [cardData]);
 
     
 
@@ -72,7 +84,7 @@ const Dashboard: React.FC = () => {
                         <div className='card-container'>
                             <div className='card-header'>
                                 <div className='card-title'>
-                                    <h1>Dashboard Monitoring</h1>
+                                    <h1>Monitoring Widget</h1>
                                 </div>
                                 <div className='card-control'>
                                     <input
@@ -81,7 +93,6 @@ const Dashboard: React.FC = () => {
                                         value={value}
                                         onChange={(e) => setValue(e.target.value)}
                                     />
-                                    {/* <p> {value} </p> */}
                                     <button onClick={hitApi}>
                                         Add
                                     </button>
@@ -91,85 +102,20 @@ const Dashboard: React.FC = () => {
                                 </div>
                             </div>
                             <div className='card-content'>
-                                <div className='card-content-container'>
-                                    <div className='content'>
-                                        <span>
-                                            <div className='content ser'>
-                                                <p>Serial Number</p>
-                                                <h2>SN105</h2>
-                                            </div>
-                                            <div className='content status'>
-                                                <div className='rnd'></div>
-                                            </div>
-                                        </span>
-
-                                    </div>
-                                    <div className='content'>
-                                        <p>Device Name</p>
-                                        <h3>Coolant Temperature Monitoring</h3>
-                                    </div>
-                                    <div className='content'>
-                                        <p>Temperature Now</p>
-                                        <div className='content value'>
-                                            <h1><span>111</span></h1>
-                                            <h3>deg C</h3>
-                                        </div>
-                                        
-                                    </div>
+                                <div className='card-plant'>
+                                    <h2>Plant A</h2>
                                 </div>
-                                <div className='card-content-container'>
-                                    <div className='content'>
-                                        <p>Serial Number</p>
-                                        <h2>SN105</h2>
-                                    </div>
-                                    <div className='content'>
-                                        <p>Device Name</p>
-                                        <h3>Coolant Temperature Monitoring</h3>
-                                    </div>
-                                    <div className='content'>
-                                        <p>Temperature Now</p>
-                                        <div className='content value'>
-                                            <h1><span>111</span></h1>
-                                            <h3>deg C</h3>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <div className='card-content-container'>
-                                    <div className='content'>
-                                        <p>Serial Number</p>
-                                        <h2>SN105</h2>
-                                    </div>
-                                    <div className='content'>
-                                        <p>Device Name</p>
-                                        <h3>Coolant Temperature Monitoring</h3>
-                                    </div>
-                                    <div className='content'>
-                                        <p>Temperature Now</p>
-                                        <div className='content value'>
-                                            <h1><span>111</span></h1>
-                                            <h3>deg C</h3>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <div className='card-content-container'>
-                                    <div className='content'>
-                                        <p>Serial Number</p>
-                                        <h2>SN105</h2>
-                                    </div>
-                                    <div className='content'>
-                                        <p>Device Name</p>
-                                        <h3>Coolant Temperature Monitoring</h3>
-                                    </div>
-                                    <div className='content'>
-                                        <p>Temperature Now</p>
-                                        <div className='content value'>
-                                            <h1><span>111</span></h1>
-                                            <h3>deg C</h3>
-                                        </div>
-                                        
-                                    </div>
+                                <div className='card-content-isi'>
+                                    {cardData?.map((data, index) => (
+                                        <Card
+                                        key={index}
+                                        flag={data.flag}
+                                        status={data.status}
+                                        serialNumber={data.serial_number}
+                                        deviceName={data.nama_device}
+                                        temperature={data.value.toFixed(2)}
+                                        />
+                                    ))}
                                 </div>
                             </div>
                         </div>

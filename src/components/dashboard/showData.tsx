@@ -6,7 +6,7 @@ export const allData = async (listDevice): Promise<any> => {
   }
 
   try {
-    const apiShowValue = `http://178.128.107.238:5000/api/home/plantA?sn=${listDevice}`
+    const apiShowValue = `http://178.128.107.238:5000/api/home/Data?sn=${listDevice}`
     const response = await fetch(apiShowValue, {
       method: "GET",
       headers: {
@@ -22,11 +22,13 @@ export const allData = async (listDevice): Promise<any> => {
         return [
           {
             ...item,
+            flag: "humudity",
             value: item.value2,
             value2: undefined,
           },
           {
             ...item,
+            flag: "temperature",
             value2: undefined,
           }
         ];
@@ -34,6 +36,7 @@ export const allData = async (listDevice): Promise<any> => {
          return [
           {
             ...item,
+            flag: undefined,
             value: 0,
             value2: undefined,
             updateAt: 0,
@@ -43,19 +46,12 @@ export const allData = async (listDevice): Promise<any> => {
          return [
           {
             ...item,
+            flag: "pressure",
             value2: undefined,
           }
         ];
       }
     });
-    const mappedData = dataDash.map((item: any) => ({
-      ser: item.serial_number,
-      namDev: item.nama_device,
-      namMac: item.mesin,
-      namVal: item.value,
-      namVal2: item.value2,
-      namStatus: item.status,
-    }));
     console.log("ini data", dataDash);
   } catch (error) {
     console.error('Error fetching data:', error);
