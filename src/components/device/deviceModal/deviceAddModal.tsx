@@ -32,22 +32,22 @@ const DeviceAddModal: React.FC<AddModalProps> = ({
   setDeviceData,
 }) => {
 
-  const handleConfirmation = (confirmed: boolean) => {
+  const handleConfirmation = (confirmed: boolean, isDelete) => {
     if (confirmed) {
       console.log('Data saved successfully!');
-      AddDevice(apiPost, deviceData.serialNumber, deviceData.deviceName, deviceData.machineName, deviceData.plant, deviceData.description)
+      AddDevice(apiPost, deviceData.serialNumber, deviceData.deviceName, device>
       .then(() => {
         window.location.reload();
       })
       .catch((error) => {
         console.error('Error updating device:', error);
       });
-      
+
     } else {
       console.log('Save operation canceled.');
     }
 
-    handleClose();
+    //handleClose();
   };
 
   return (
