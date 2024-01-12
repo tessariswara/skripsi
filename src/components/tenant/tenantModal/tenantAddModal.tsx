@@ -28,7 +28,7 @@ const TenantAddModal: React.FC<AddModalProps> = ({
   setTenanData,
 }) => {
 
-  const handleConfirmation = (confirmed: boolean) => {
+  /*const handleConfirmation = (confirmed: boolean) => {
     if (confirmed) {
       console.log('Data saved successfully!');
       AddTenant(tenantPost, tenanData.plantName, tenanData.address, tenanData.description)
@@ -38,14 +38,13 @@ const TenantAddModal: React.FC<AddModalProps> = ({
       .catch((error) => {
         console.error('Error updating device:', error);
       });
-      
+
     } else {
       console.log('Save operation canceled.');
     }
-
     handleClose();
-  };
-  
+  };*/
+
 
   return (
     <TenantModal
@@ -55,10 +54,10 @@ const TenantAddModal: React.FC<AddModalProps> = ({
       tenantPost={tenantPost}
       show={show}
       handleClose={handleClose}
-      handleConfirmation={handleConfirmation}
       tenanData={tenanData}
       setTenanData={setTenanData}
       isEdit={false}
+      showDeleteButton={false}
     />
   );
 };
