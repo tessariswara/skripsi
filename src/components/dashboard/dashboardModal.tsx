@@ -6,6 +6,7 @@ import { fetchData, cachedData } from '../device/deviceApi/hitApi';
 const DashboardModal = ({isOpen, onRequestClose, onSelectedValues}) => {
   const [selectedOption, setSelectedOption] = useState([]);
   const [options, setOptions] = useState<string[]>([]);
+  const [saveData, setSaveData] = useState([]);
 
   const selectStyle = {
     control: (provided, state) => ({
@@ -35,19 +36,24 @@ const DashboardModal = ({isOpen, onRequestClose, onSelectedValues}) => {
     }
   };
 
+
   useEffect(() => {
     return () => main();
   }, []);
 
   const submit = async () => {
     const selectedValues = selectedOption.map(option => option.value).join(',');
+    // setSaveData(selectedValues);
+    console.log("save", saveData);
     await onSelectedValues(selectedValues);
     onRequestClose();
-    console.log("ini selected", selectedValues);
+    // console.log("ini selected", selectedValues);
   };
 
+
+
   return isOpen ? (
-    <div className="modal-content">
+    <div className="modala">
       <div className="modal-content">
         <h1 className='modal-header'>Add Device Widget</h1>
         <Select

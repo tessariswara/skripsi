@@ -1,11 +1,12 @@
 export let dataDash : any;
 
 export const allData = async (listDevice): Promise<any> => {
-  if (dataDash) {
-    return dataDash;
-  }
+  // if (dataDash) {
+  //   return dataDash;
+  // }
 
   try {
+    console.log("list",listDevice)
     const apiShowValue = `http://178.128.107.238:5000/api/home/Data?sn=${listDevice}`
     const response = await fetch(apiShowValue, {
       method: "GET",

@@ -34,7 +34,7 @@ const TenantEditModal: React.FC<EditModalProps> = ({
   tenanData,
   setTenanData,
 }) => {
-  const [isDelete, setIsDelete] = useState(true);
+  /*const [isDelete, setIsDelete] = useState(true);
   const handleConfirmation = (confirmed: boolean) => {
     if (confirmed && isDelete === false) {
       console.log("apa cik", tenanData.plantName)
@@ -58,8 +58,7 @@ const TenantEditModal: React.FC<EditModalProps> = ({
       console.log('Update operation canceled.');
       handleClose();
     }
-  };
-  
+  };*/
 
   return (
     <TenantModal
@@ -70,12 +69,10 @@ const TenantEditModal: React.FC<EditModalProps> = ({
       tenantDelete={tenantDelete}
       show={show}
       handleClose={handleClose}
-      handleConfirmation={handleConfirmation}
       tenanData={tenanData}
       setTenanData={setTenanData}
-      showDeleteButton={true} 
+      showDeleteButton={true}
       isEdit={true}
-      isDelete={isDelete}
     />
   );
 };

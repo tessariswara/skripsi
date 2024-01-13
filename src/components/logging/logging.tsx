@@ -4,7 +4,6 @@ import "../../index.css"
 import { LineChart } from '@mui/x-charts/LineChart';
 import DatePicker from "react-datepicker";
 import "../../../node_modules/react-datepicker/dist/react-datepicker.css";
-import "../../index.css"
 import Select from 'react-select';
 interface Device {
   serial_number: string;
@@ -21,7 +20,14 @@ const Logging: React.FC = () => {
   const [textDateTo, setTextDateTo] = useState('Date To');
   const [dateToOpen, setDateToOpen] = useState(false);
   const [xData, setXData] = useState([]);
+  const [xData2, setXData2] = useState([]);
   const [yData, setYData] = useState([]);
+  const [flagValue, setFlagValue] = useState(false);
+
+  const addHours = (date) => {
+  date.setTime(date.getTime() - 25200000);
+  return date;
+  };
 
   const selectStyle = {
     control: (provided: any, state: { isDisabled: boolean }) => ({
@@ -41,7 +47,7 @@ const Logging: React.FC = () => {
     }),
   };
 
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectChange = (e) => {
     setSelectedDevice(e.value);
   };
 
@@ -70,7 +76,7 @@ const Logging: React.FC = () => {
   useEffect(() => {
     const optionData = async () => {
       try {
-        const apiListSN = "http://178.128.107.238:5000/api/device/plantA/allDevice"
+        const apiListSN = "http://178.128.107.238:5000/api/device/Data/allDevice"
         const response = await fetch(apiListSN, {
           method: "GET",
           headers: {
@@ -102,7 +108,7 @@ const Logging: React.FC = () => {
       try {
         const from = dateFrom.toLocaleDateString();
         const to = dateTo.toLocaleDateString();
-        const apiLog = `http://178.128.107.238:5000/api/log/plantA/${selectedDevice}?from=${from}&to=${to}`
+        const apiLog = `http://178.128.107.238:5000/api/log/Log/${selectedDevice}?from=${from}&to=${to}`
         console.log(apiLog);
         const response = await fetch(apiLog, {
           method: "GET",
@@ -112,13 +118,22 @@ const Logging: React.FC = () => {
         const jsonData = await response.json();
         console.log(jsonData);
         const data = jsonData.data.response;
-        const sortedData = [...data].sort((a, b) => a.updateAt - b.updateAt);
-        const xValues = sortedData.map(item => parseFloat(item.value));
-        const yValues = sortedData.map(item => new Date(item.updateAt).toISOString());
-        setXData(xValues);
+        const sortedData = [...data].sort((a, b) => a.updatedAt - b.updatedAt);
+        sortedData.map(item => {
+          if (item.value2 !== null) {
+              setFlagValue(true);
+              const xValues = sortedData.map(item => parseFloat(item.value));;
+              const xValues2 = sortedData.map(item => parseFloat(item.value2));;
+              setXData(xValues);
+              setXData2(xValues2);
+          } else {
+              setFlagValue(false);
+              const xValues = sortedData.map(item => parseFloat(item.value));;
+              setXData(xValues);
+          }
+          });
+        const yValues = sortedData.map(item => addHours(new Date(item.updatedAt)));
         setYData(yValues);
-        console.log(xData);
-        console.log(yData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -133,11 +148,11 @@ const Logging: React.FC = () => {
     try {
       const from = dateFrom.toLocaleDateString();
       const to = dateTo.toLocaleDateString();
-      const apiDownloadLog = `http://178.128.107.238:5000/api/log/plantA/download/${selectedDevice}?from=${from}&to=${to}`
+      const apiDownloadLog = `http://178.128.107.238:5000/api/log/Log/download/${selectedDevice}?from=${from}&to=${to}`
       console.log(apiDownloadLog);
       const link = document.createElement('a');
       link.href = apiDownloadLog;
-      link.setAttribute('download', '');
+      link.setAttribute('download', ''); // Empty attribute for preformatted filename and format
       link.style.display = 'none';
       document.body.appendChild(link);
 
@@ -155,7 +170,7 @@ const Logging: React.FC = () => {
             <div className='border-container'>
                 <div className='content-container'>
                     <div className='page-header'>
-                        <div className='page-title'>
+                        <div className='page-tittle'>
                             <h1>Logging</h1>
                         </div>
                     </div>
@@ -163,17 +178,17 @@ const Logging: React.FC = () => {
                         <div className='page-control'>
                             <Select
                               styles={selectStyle}
-                              placeholder="List Device..."
+                              placeholder="Serial Number..."
                               value={selectedDevice !== '' ? { value: selectedDevice, label: selectedDevice } : null}
                               onChange={handleSelectChange}
                               options={devices}
-                            />
+                              />
                           <div className="button-wrapper">
                               <button className='log-button' onClick={clickDateFrom}>
                               {textDateFrom}
                               </button>
                               {dateFromOpen && (
-                              <div className="datepicker-wrapper">
+                                <div className="datepicker-wrapper">
                                 <DatePicker selected={dateFrom} onChange={changeDateFrom} inline />
                               </div>
                               )}
@@ -188,14 +203,13 @@ const Logging: React.FC = () => {
                               </div>
                               )}
                           </div>
-                        </div>
-                        <div className='b'>
                           <button className='log-download' onClick={downloadLog}>
                             Download
                           </button>
-                        </div>
-                      </div>
+                     </div>
+                    </div>
                     <div className='chart'>
+                       {flagValue ? (
                         <LineChart
                           height={540}
                           slotProps= {{
@@ -206,9 +220,27 @@ const Logging: React.FC = () => {
                                          itemMarkHeight: 3,
                                         },
                                      }}
-                          series = {[ {data: xData, label: 'value', color: '#1438F4'} ]}
+                          series = {[
+                            { showMark: false, curve: 'natural', data: xData, label: 'Temperature' },
+                            { showMark: false, curve: 'natural', data: xData2, label: 'Humidity' }
+                                   ]}
+                          xAxis = {[{ scaleType: 'time' ,data: yData }]}
+                        />
+                        ) : (
+                        <LineChart
+                          height={540}
+                          slotProps= {{
+                                       legend: {
+                                         position: { vertical: 'top', horizontal: 'left' },
+                                         padding: { top: 515, left: 50 },
+                                         itemMarkWidth: 50,
+                                         itemMarkHeight: 3,
+                                        },
+                                     }}
+                          series = {[ {data: xData, label: 'Pressure', color: '#1438F4'} ]}
                           xAxis = {[{ scaleType: 'point', data: yData }]}
                         />
+                         )}
                    </div>
                 </div>
             </div>
@@ -217,13 +249,3 @@ const Logging: React.FC = () => {
 };
 
 export default Logging;
-
-// GAK KEPAKE TAPI LUMAYAN BUAT BACKUP
-{/* <select className='round' value={selectedDevice} onChange={handleSelectChange}>
-  <option value="">List Device</option>
-    {devices.map((device, index) => (
-        <option key={index} value={device.serial_number}>
-            {device.serial_number}
-        </option>
-      ))}
-</select> */}

@@ -39,6 +39,7 @@ const DeviceTable: React.FC<DeviceTableProps> = ({searchText }) => {
         namMac: item.mesin,
         namPla: item.plant,
         namDesc: item.deskripsi,
+        namSta: item.status,
       }));
       setDeviceData(mappedData);
     } catch (error) {
@@ -78,27 +79,32 @@ const DeviceTable: React.FC<DeviceTableProps> = ({searchText }) => {
     {
       field: "id",
       headerName: "Serial Number",
-      flex: 1,
+      flex: 0.7,
     },
     {
       field: "namDev",
       headerName: "Device Name",
-      flex: 1,
+      flex: 0.8,
     },
     {
       field: "namMac",
       headerName: "Machine Name",
-      flex: 1,
+      flex: 0.8,
     },
     {
       field: "namPla",
       headerName: "Plant",
-      flex: 0.7,
+      flex: 0.6,
     },
     {
       field: "namDesc",
       headerName: "Deskripsi",
       flex: 1,
+    },
+    {
+      field: "namSta",
+      headerName: "Status",
+      flex: 0.5,
     },
   ];
 

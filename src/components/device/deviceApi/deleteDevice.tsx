@@ -1,7 +1,7 @@
 export const deleteDeviceApi = async (apiDelete: string, plant: string, serialNumbers: string[]) => {
     const queryParam = `sn=${serialNumbers.join(',')}`;
     console.log("ini loh", queryParam)
-    const url = `${apiDelete}/device/plantA?${queryParam}`;
+    const url = `${apiDelete}/device/Data?${queryParam}`;
   
     try {
       const response = await fetch(url, { method: 'DELETE' });

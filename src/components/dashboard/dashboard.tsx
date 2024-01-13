@@ -19,7 +19,6 @@ const Dashboard: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [cardData, setCardData] = useState<CardData[]>([]);
     const [plants, setPlants] = useState<string[]>([]);
-const [selectedValues, setSelectedValues] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => {
@@ -33,17 +32,18 @@ const [selectedValues, setSelectedValues] = useState<string>('');
     useEffect(() => {
         const interval = setInterval(() => {
         setCurrentDate(new Date());
-        }, 1000);
+        }, 10000);
 
         return () => clearInterval(interval);
     }, []);
 
     const onSelectedValues = async (selectedValues: string) => {
+        console.log("ini boy", selectedValues)
         await allData(selectedValues);
         console.log("ini value", value)
         console.log('ini dataDash', dataDash);
         setCardData(dataDash);
-        
+        console.log('ini dataDash 2', dataDash);
         const penamaanPlant = Array.from(new Set(dataDash.map(data => data.plant))).sort();
         setPlants(penamaanPlant);
       };
@@ -51,7 +51,7 @@ const [selectedValues, setSelectedValues] = useState<string>('');
     useEffect(() => {
         const intervalId = setInterval(() => {
           onSelectedValues(value);
-        }, 5);
+        }, 200000);
         return () => clearInterval(intervalId);
       }, [value, cardData]); 
     
@@ -115,11 +115,11 @@ const [selectedValues, setSelectedValues] = useState<string>('');
                                         onChange={(e) => setValue(e.target.value)}
                                     /> */}
                                     <button onClick={openModal}>
-                                        Add
+                                        Edit Widget
                                     </button>
-                                    <button>
+                                    {/* <button>
                                         Edit
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                             <div className='card-content'>

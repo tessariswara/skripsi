@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import TenantModalConfirm from './tenantModalConfirm';
 import Select from 'react-select';
 import '../../../styles/device.css';
-// import { deleteDeviceApi } from '../deviceApi/deleteDevice';
 import { deleteTenantApi } from '../tenantApi/deleteTenant'
 import "../../../styles/device.css"
 import TenantEditModal from './tenantEditModal';
@@ -18,7 +17,6 @@ interface ModalProps {
   show: boolean;
   showDeleteButton?: boolean;
   handleClose: () => void;
-  handleConfirmation: (confirmed: boolean) => void;
   isEdit,
   tenanData: {
     plantName: string;
@@ -41,21 +39,18 @@ const TenantModal: React.FC<ModalProps> = ({
   show,
   showDeleteButton,
   handleClose,
-  handleConfirmation: propHandleConfirmation,
   tenanData,
   setTenanData,
-  isEdit,
+  isEdit
 }) => {
   const [isDelete, setIsDelete] = useState(true);
   const [plantSelected, setPlantSelected] = useState(false);
-
+  const [resetData, setResetData] = useState(false);
   const [plantName, setPlantName] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [error, setError] = useState<string>('');
-
   const [options, setOptions] = useState([]);
   const [forceUpdateKey, setForceUpdateKey] = useState(0);
 
@@ -84,6 +79,7 @@ const TenantModal: React.FC<ModalProps> = ({
         deskripsi: item.firstName,
       }));
         setTenanData(filteredLagi);
+        console.log("ini bos", tenData)
         const formattedOptions: TenDataItem[] = (tenData || []).map((item) => ({
           value: item.id,
           label: item.id,
@@ -93,14 +89,14 @@ const TenantModal: React.FC<ModalProps> = ({
         // kosongin aza
       }
     };
-  
+
     bismillah();
-  }, [tenData]);
+  }, [tenData,resetData]);
 
   const handleCombinedChange = selectedOption => {
     handleSelectChange(selectedOption);
   };
-  
+
   const handleSelectChange = (selectedOption) => {
     const selectedPlantName = selectedOption.value;
     const selectedTenant = tenanData.find((item) => item.namaPlant === selectedPlantName);
@@ -140,28 +136,16 @@ const TenantModal: React.FC<ModalProps> = ({
         });
       setIsDelete(false)
       setShowConfirmationModal(true);
-      try {
-        await deleteTenantApi(tenantDelete, address, [plantName]);
-        console.log('Data deleted successfully!');
-      } catch (error) {
-        console.error('Error deleting device:', error.message);
-      }
+      setError('');
     } else {
       setError('**Please fill all input forms');
     }
   };
 
-  const handleConfirmation = (confirmed: boolean) => {
+  const handleConfirmation = () => {
     setShowConfirmationModal(false);
-    if (confirmed) {
-      console.log('Data saved successfully!');
-      propHandleConfirmation(true);
-    } else {
-      console.log('Save operation canceled.');
-      propHandleConfirmation(false);
-    }
-
-    handleClose();
+    setIsDelete(true);
+    setResetData(!resetData);;
   };
 
   const resetForm = () => {
@@ -176,8 +160,8 @@ const TenantModal: React.FC<ModalProps> = ({
     if (show) {
       resetForm();
     }
-  }, [show]); 
-  
+  }, [show]);
+
   return (
     <div key={forceUpdateKey}>
       <div className={`modal ${show ? 'visible' : 'hidden'}`}>
@@ -206,7 +190,6 @@ const TenantModal: React.FC<ModalProps> = ({
               />
             )}
           </div>
-
           <div className="modal-column">
             <label>Address</label>
             <input
@@ -217,8 +200,6 @@ const TenantModal: React.FC<ModalProps> = ({
               disabled={isEdit && !plantSelected}
             />
           </div>
-
-
           <div className="modal-column">
             <label>Description</label>
             <input
@@ -248,9 +229,13 @@ const TenantModal: React.FC<ModalProps> = ({
       </div>
 
       <TenantModalConfirm
+        titleButton={titleButton}
         show={showConfirmationModal}
         handleConfirmation={handleConfirmation}
         isDelete={isDelete}
+        apiPost={tenantPost}
+        apiDelete={tenantDelete}
+        tenanData={tenanData}
       />
 
     </div>
@@ -258,65 +243,3 @@ const TenantModal: React.FC<ModalProps> = ({
 };
 
 export default TenantModal;
-
-
-// GAK KEPAKE TAPI LUMAYAN BUAT BACKUP
-
-// import { fetchDataFromApi } from '../deviceApi/deviceHitApi';
-// import { fetchDataFromTenant } from '../../tenant/tenantApi/tenantHitApi';    1
-// import { tenantUrl } from '../../../App';
-// import { fetchData, cachedData } from '../deviceApi/hitApi';
-
-  //   const fetchDa = async () => {
-  //     try {
-  //       const apiLagi = await fetchDataFromApi(apiUrl);
-  //       const filteredLagi = apiLagi.map((item) => ({
-  //         serNum: item.serial_number,
-  //         namDev: item.nama_device,
-  //         nameMac: item.mesin,
-  //         namPla: item.plant,
-  //         namDesc: item.deskripsi,
-  //       }));
-  //       setDeviceData(filteredLagi);
-  //       const formattedOptions = apiLagi.map(item => ({
-  //         value: item.serial_number,
-  //         label: item.serial_number,
-  //       }));
-  //       setOptions(formattedOptions);
-  //     } catch (error) {
-  //       console.error("Error setting device data:", error.message);
-  //       setError("Error fetching data from server. Please try again.");
-  //     }
-  //   };
-  //   const fetchPlants = async () => {
-  //     try {
-  //       const plants = await fetchDataFromTenant(tenantUrl);
-  //       const plantOptions = plants.map((item) => ({
-  //         value: item.plant_name,
-  //         label: item.plant_name,
-  //       }));
-  //       setPlantOptions(plantOptions);
-  //     } catch (error) {
-  //       console.error("Error fetching plant options:", error.message);
-  //       setPlantOptions([]); 
-  //     }
-  //   };
-    
-  //   fetchPlants();
-  //   fetchDa();
-  // useEffect(() => {
-  //   const fetchPlants = async () => {
-  //     try {
-  //       const plants = await fetchDataFromTenant(tenantUrl);
-  //       const plantOptions = plants.map((item) => ({
-  //         value: item.plant_name,
-  //         label: item.plant_name,
-  //       }));
-  //       setPlantOptions(plantOptions);
-  //     } catch (error) {
-  //       console.error("Error fetching plant options:", error.message);
-  //       setPlantOptions([]); 
-  //     }
-  //   };
-  //   return ()=> fetchPlants();
-  // }, [])

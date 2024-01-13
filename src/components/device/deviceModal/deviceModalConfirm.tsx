@@ -23,15 +23,15 @@ const DeviceModalConfirm: React.FC<ModalConfirmProps> = ({ show, handleConfirmat
           )}
         </div>
         <div className="modal-cta confirm">
-          <button className="button cancel" onClick={() => handleConfirmation(false)}>
+          <button className="button cancel" onClick={() => handleConfirmation(false, isDelete)}>
             Cancel
           </button>
           {isDelete ? (
-              <button className="button" onClick={() => handleConfirmation(true)}>
+              <button className="button" onClick={() => handleConfirmation(true, isDelete)}>
                 Save
               </button>
           ):(
-            <button className="button" onClick={() => handleConfirmation(true)}>
+            <button className="button" onClick={() => handleConfirmation(true,isDelete)}>
               Delete
             </button>
           )}
