@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [cardData, setCardData] = useState<CardData[]>([]);
     const [plants, setPlants] = useState<string[]>([]);
-
+const [selectedValues, setSelectedValues] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => {
@@ -51,7 +51,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const intervalId = setInterval(() => {
           onSelectedValues(value);
-        }, 60000);
+        }, 5);
         return () => clearInterval(intervalId);
       }, [value, cardData]); 
     

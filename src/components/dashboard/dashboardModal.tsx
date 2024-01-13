@@ -41,8 +41,9 @@ const DashboardModal = ({isOpen, onRequestClose, onSelectedValues}) => {
 
   const submit = async () => {
     const selectedValues = selectedOption.map(option => option.value).join(',');
-    onSelectedValues(selectedValues);
+    await onSelectedValues(selectedValues);
     onRequestClose();
+    console.log("ini selected", selectedValues);
   };
 
   return isOpen ? (
