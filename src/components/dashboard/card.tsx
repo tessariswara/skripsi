@@ -34,6 +34,18 @@ const Card: React.FC<CardProps> = ({flag, status, serialNumber, deviceName, temp
         }
       };
 
+      const satuan = () => {
+        if (flag === 'temperature') {
+          return '°C';
+        } else if (flag === 'humudity') {
+          return '%';
+        } else if (flag === 'pressure') {
+            return 'Psi';
+        } else {
+          return 'N/A';
+        }
+      };
+
 
       const sts = () => {
         if (status === 'Connected') {
@@ -64,7 +76,7 @@ const Card: React.FC<CardProps> = ({flag, status, serialNumber, deviceName, temp
         <p>{sensorType()}</p>
         <div className="content value">
           <h1><span>{temperature}</span></h1>
-          <h2>°C</h2>
+          <h2>{satuan()}</h2>
         </div>
       </div>
     </div>

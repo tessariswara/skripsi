@@ -1,38 +1,59 @@
-import React, {useState, useEffect, ChangeEvent } from 'react';
-import "../../styles/dashboard.css"
-import logoPlant from  "../../assets/Vector.svg"
-import {dataDash, allData} from "../dashboard/showData.tsx"
+import React, { useState, useEffect } from 'react';
+import '../../styles/dashboard.css';
+import logoPlant from '../../assets/Vector.svg';
+import { allData, dataDash } from '../dashboard/showData.tsx';
+import DashboardModal from './dashboardModal.tsx';
 import Card from './card.tsx';
 
 interface CardData {
     flag: string;
+    status: string;
     serialNumber: string;
     deviceName: string;
-    temperature: number;
-  }
+    value: number;
+    plant: string;
+}
 
 const Dashboard: React.FC = () => {
     const [value, setValue] = useState('');
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [cardData, setCardData] = useState<CardData[]>([])
+    const [cardData, setCardData] = useState<CardData[]>([]);
+    const [plants, setPlants] = useState<string[]>([]);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentDate(new Date());
+        setCurrentDate(new Date());
         }, 1000);
 
         return () => clearInterval(interval);
     }, []);
 
-    const hitApi = async () => {
-        await allData(value);
-        console.log("ini dataDash", dataDash);
+    const onSelectedValues = async (selectedValues: string) => {
+        await allData(selectedValues);
+        console.log("ini value", value)
+        console.log('ini dataDash', dataDash);
         setCardData(dataDash);
+        
+        const penamaanPlant = Array.from(new Set(dataDash.map(data => data.plant))).sort();
+        setPlants(penamaanPlant);
       };
 
-      useEffect(() => {
-      }, [cardData]);
-
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+          onSelectedValues(value);
+        }, 60000);
+        return () => clearInterval(intervalId);
+      }, [value, cardData]); 
     
 
     return (
@@ -48,7 +69,7 @@ const Dashboard: React.FC = () => {
                             </div>
                             <div className='page-control'>
                                 <div className='page-plant'>
-                                    <h3>Plant Monitoring</h3>
+                                    <h2>Plant Monitoring</h2>
                                     <div className='page-plant-card'>
                                         <div className='logo'>
                                             <img src={logoPlant}></img>
@@ -87,13 +108,13 @@ const Dashboard: React.FC = () => {
                                     <h1>Monitoring Widget</h1>
                                 </div>
                                 <div className='card-control'>
-                                    <input
+                                    {/* <input
                                         type="text"
                                         placeholder="Enter Serial Number"
                                         value={value}
                                         onChange={(e) => setValue(e.target.value)}
-                                    />
-                                    <button onClick={hitApi}>
+                                    /> */}
+                                    <button onClick={openModal}>
                                         Add
                                     </button>
                                     <button>
@@ -102,26 +123,33 @@ const Dashboard: React.FC = () => {
                                 </div>
                             </div>
                             <div className='card-content'>
-                                <div className='card-plant'>
-                                    <h2>Plant A</h2>
-                                </div>
-                                <div className='card-content-isi'>
-                                    {cardData?.map((data, index) => (
-                                        <Card
-                                        key={index}
-                                        flag={data.flag}
-                                        status={data.status}
-                                        serialNumber={data.serial_number}
-                                        deviceName={data.nama_device}
-                                        temperature={data.value.toFixed(2)}
-                                        />
-                                    ))}
-                                </div>
+                                {plants.map((plant, plantIndex) => (
+                                    <div key={plantIndex} className="card-content">
+                                    <div className="card-plant">
+                                        <h2>{plant}</h2>
+                                    </div>
+                                    <div className="card-content-isi">
+                                        {cardData
+                                        .filter(data => data.plant === plant)
+                                        .map((data, index) => (
+                                            <Card
+                                            key={index}
+                                            flag={data.flag}
+                                            status={data.status}
+                                            serialNumber={data.serial_number}
+                                            deviceName={data.nama_device}
+                                            temperature={data.value.toFixed(2)}
+                                            />
+                                        ))}
+                                    </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <DashboardModal isOpen={isModalOpen} onRequestClose={closeModal} onSelectedValues={onSelectedValues}/>
         </div>
     );
 };
