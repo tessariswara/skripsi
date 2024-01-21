@@ -119,21 +119,24 @@ const Logging: React.FC = () => {
         console.log(jsonData);
         const data = jsonData.data.response;
         const sortedData = [...data].sort((a, b) => a.updatedAt - b.updatedAt);
-        sortedData.map(item => {
-          if (item.value2 !== null) {
-              setFlagValue(true);
+        const yValues = sortedData.map(item => addHours(new Date(item.updatedAt)));
+        setYData(yValues);
+        //const hasValue2 = sortedData.some(item => item.value2 !== null);
+        const hasValue2 = sortedData.some(item => item.value2 !== null && item.value2 !== undefined);
+        console.log(hasValue2);
+        setFlagValue(hasValue2);
+        console.log(flagValue)
+          if (hasValue2) {
+              //setFlagValue(true);
               const xValues = sortedData.map(item => parseFloat(item.value));;
-              const xValues2 = sortedData.map(item => parseFloat(item.value2));;
+              const xValues2 = sortedData.map(item => parseFloat(item.value2 || 0));;
               setXData(xValues);
               setXData2(xValues2);
           } else {
-              setFlagValue(false);
+              //setFlagValue(false);
               const xValues = sortedData.map(item => parseFloat(item.value));;
               setXData(xValues);
           }
-          });
-        const yValues = sortedData.map(item => addHours(new Date(item.updatedAt)));
-        setYData(yValues);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -237,8 +240,8 @@ const Logging: React.FC = () => {
                                          itemMarkHeight: 3,
                                         },
                                      }}
-                          series = {[ {data: xData, label: 'Pressure', color: '#1438F4'} ]}
-                          xAxis = {[{ scaleType: 'point', data: yData }]}
+                          series = {[ { showMark: false, curve: 'natural', data: xData, label: 'Pressure' } ]}
+                          xAxis = {[{ scaleType: 'time', data: yData }]}
                         />
                          )}
                    </div>
